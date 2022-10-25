@@ -5,8 +5,14 @@
 		"workspaceName": {
 			"value": "synpasedl"
 		},
+		"bbaccstorageold_accountKey": {
+			"value": ""
+		},
 		"synpasedl-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
+		},
+		"bbaccstorageold_properties_typeProperties_url": {
+			"value": "https://accsynapsestorage.dfs.core.windows.net/"
 		},
 		"synpasedl-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://synpasedlstore.dfs.core.windows.net"
