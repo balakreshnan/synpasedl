@@ -2,7 +2,7 @@
 	"name": "bbfpdopvconf",
 	"properties": {
 		"content": {
-			"query": "create database datagovdb;\n\nuse datagovdb;\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;\n\nuse datagovdb;\nCREATE USER [bbfpdopv] FOR LOGIN [bbfpdopv];\nALTER ROLE db_datareader ADD MEMBER [bbfpdopv];",
+			"query": "create database datagovdb;\n\nuse datagovdb;\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;\n\nuse datagovdb;\nCREATE USER [bbfpdopv] FOR LOGIN [bbfpdopv];\nALTER ROLE db_datareader ADD MEMBER [bbfpdopv];\n\nGRANT REFERENCES ON DATABASE SCOPED CREDENTIAL::[scoped_credential] TO [bbfpdopv];",
 			"metadata": {
 				"language": "sql"
 			},
