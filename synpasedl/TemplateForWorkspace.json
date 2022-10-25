@@ -98,12 +98,12 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "create database datagovdb;\n\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;",
+					"query": "create database datagovdb;\n\nuse datagovdb;\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;\n\nuse datagovdb;\nCREATE USER [bbfpdopv] FOR LOGIN [bbfpdopv];\nALTER ROLE db_datareader ADD MEMBER [bbfpdopv];",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
+						"databaseName": "datagovdb",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
