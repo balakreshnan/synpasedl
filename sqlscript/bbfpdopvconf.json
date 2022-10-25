@@ -1,0 +1,17 @@
+{
+	"name": "bbfpdopvconf",
+	"properties": {
+		"content": {
+			"query": "create database datagovdb;\n\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
