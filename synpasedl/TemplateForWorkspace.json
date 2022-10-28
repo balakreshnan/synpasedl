@@ -178,7 +178,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"container": "images"
+						"container": "models"
 					}
 				}
 			},
@@ -223,7 +223,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "claytonhomes/images",
+						"folderPath": "claytonhomes/models",
 						"container": "root"
 					}
 				}
