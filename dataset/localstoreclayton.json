@@ -1,0 +1,18 @@
+{
+	"name": "localstoreclayton",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "defaultstorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "claytonhomes",
+				"container": "root"
+			}
+		}
+	}
+}

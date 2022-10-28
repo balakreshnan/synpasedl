@@ -1,0 +1,16 @@
+{
+	"name": "jcinput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "jcinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation"
+			}
+		}
+	}
+}
