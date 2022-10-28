@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "claytonhomes/images",
+				"folderPath": "claytonhomes/models",
 				"container": "root"
 			}
 		}
