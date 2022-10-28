@@ -8,6 +8,12 @@
 		"bbaccstorageold_accountKey": {
 			"value": ""
 		},
+		"defaultstorage_connectionString": {
+			"value": ""
+		},
+		"jcinput_connectionString": {
+			"value": ""
+		},
 		"synpasedl-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
