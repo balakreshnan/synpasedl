@@ -1,0 +1,19 @@
+{
+	"name": "RestService1",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://www.yahoo.com",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Basic",
+			"userName": "anonymous",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VANkYzNUFCQjAtRkMwMS00MTlCLTk0MUYtMzE3RjgzNkU4MzNFXzE4ZmE4ZWQ4LTUyZWQtNDQ1Ni04YTgzLWY1YTg3NjU3M2EyZSINCn0="
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
