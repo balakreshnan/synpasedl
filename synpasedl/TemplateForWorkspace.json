@@ -7,6 +7,10 @@
 			"metadata": "Workspace name",
 			"defaultValue": "synpasedl"
 		},
+		"RestService1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'RestService1'"
+		},
 		"bbaccstorageold_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'bbaccstorageold'"
@@ -22,6 +26,14 @@
 		"synpasedl-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'synpasedl-WorkspaceDefaultSqlServer'"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.yahoo.com"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "anonymous"
 		},
 		"bbaccstorageold_properties_typeProperties_url": {
 			"type": "string",
@@ -165,6 +177,24 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/RestResource1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/RestService1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/jcinput')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -253,6 +283,32 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/bbaccstorageold')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/RestService1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('RestService1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('RestService1_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -395,6 +451,26 @@
 			"properties": {
 				"content": {
 					"query": "create database datagovdb;\n\nuse datagovdb;\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;\n\nuse datagovdb;\nCREATE USER [bbfpdopv] FOR LOGIN [bbfpdopv];\nALTER ROLE db_datareader ADD MEMBER [bbfpdopv];\n\nGRANT REFERENCES ON DATABASE SCOPED CREDENTIAL::[scoped_credential] TO [bbfpdopv];",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "datagovdb",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/tpschexttablecreation')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'root_synpasedlstore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [root_synpasedlstore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://root@synpasedlstore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE Nation (\n\t[N_NATIONKEY] numeric(38,0),\n\t[N_NAME] nvarchar(4000),\n\t[N_REGIONKEY] numeric(38,0),\n\t[N_COMMENT] nvarchar(4000)\n\t)\n\tWITH (\n\tLOCATION = 'tpch/NATION/**',\n\tDATA_SOURCE = [root_synpasedlstore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.Nation\nGO\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://synpasedlstore.dfs.core.windows.net/root/tpch/PART/**',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -553,7 +629,7 @@
 				"nodeSizeFamily": "MemoryOptimized",
 				"sparkVersion": "3.2",
 				"isComputeIsolationEnabled": false,
-				"sessionLevelPackagesEnabled": false,
+				"sessionLevelPackagesEnabled": true,
 				"annotations": []
 			},
 			"dependsOn": [],

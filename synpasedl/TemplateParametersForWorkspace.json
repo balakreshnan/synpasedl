@@ -5,6 +5,9 @@
 		"workspaceName": {
 			"value": "synpasedl"
 		},
+		"RestService1_password": {
+			"value": ""
+		},
 		"bbaccstorageold_accountKey": {
 			"value": ""
 		},
@@ -16,6 +19,12 @@
 		},
 		"synpasedl-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
+		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://www.yahoo.com"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"value": "anonymous"
 		},
 		"bbaccstorageold_properties_typeProperties_url": {
 			"value": "https://accsynapsestorage.dfs.core.windows.net/"
