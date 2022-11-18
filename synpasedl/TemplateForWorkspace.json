@@ -573,7 +573,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "def7fb2e-8478-42e5-9070-2c3c3e5f53b8"
+						"spark.autotune.trackingId": "92ba2e7c-c17b-48f6-812c-898999fb3a68"
 					}
 				},
 				"metadata": {
@@ -598,13 +598,15 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224
+						"memory": 224,
+						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"# Predict NYC Taxi Tips using Spark ML and Azure Open Datasets\n",
 							"\n",
@@ -615,6 +617,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"import matplotlib.pyplot as plt\n",
 							"\n",
@@ -637,6 +640,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Ingest Data¶ \n",
 							"\n",
@@ -645,6 +649,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"# Import NYC yellow cab data from Azure Open Datasets\n",
 							"from azureml.opendatasets import NycTlcYellow\n",
@@ -663,6 +668,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"#To make development easier, faster and less expensive downsample for now\n",
 							"sampled_taxi_df = nyc_tlc_df.sample(True, 0.001, seed=1234)"
@@ -672,6 +678,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Exploratory Data Analysis\n",
 							"\n",
@@ -680,6 +687,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"#The charting package needs a Pandas dataframe or numpy array do the conversion\n",
 							"sampled_taxi_pd_df = sampled_taxi_df.toPandas()\n",
@@ -714,6 +722,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Data Prep and Featurization\n",
 							"\n",
@@ -725,6 +734,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"taxi_df = sampled_taxi_df.select('totalAmount', 'fareAmount', 'tipAmount', 'paymentType', 'rateCodeId', 'passengerCount'\\\n",
 							"                                , 'tripDistance', 'tpepPickupDateTime', 'tpepDropoffDateTime'\\\n",
@@ -747,6 +757,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Data Prep and Featurization Part 2\n",
 							"\n",
@@ -758,6 +769,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"taxi_featurised_df = taxi_df.select('totalAmount', 'fareAmount', 'tipAmount', 'paymentType', 'passengerCount'\\\n",
 							"                                                , 'tripDistance', 'weekdayString', 'pickupHour','tripTimeSecs','tipped'\\\n",
@@ -774,6 +786,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Encoding\n",
 							"\n",
@@ -787,6 +800,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"# The sample uses an algorithm that only works with numeric features convert them so they can be consumed\n",
 							"sI1 = StringIndexer(inputCol=\"trafficTimeBins\", outputCol=\"trafficTimeBinsIndex\"); \n",
@@ -802,6 +816,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Generation of Testing and Training Data Sets\n",
 							"Simple split, 70% for training and 30% for testing the model. Playing with this ratio may result in different models.\n",
@@ -810,6 +825,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"# Decide on the split between training and testing data from the dataframe \n",
 							"trainingFraction = 0.7\n",
@@ -824,6 +840,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Train the Model\n",
 							"\n",
@@ -832,6 +849,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"## Create a new LR object for the model\n",
 							"logReg = LogisticRegression(maxIter=10, regParam=0.3, labelCol = 'tipped')\n",
@@ -859,6 +877,7 @@
 					},
 					{
 						"cell_type": "markdown",
+						"metadata": {},
 						"source": [
 							"## Evaluate and Visualize\n",
 							"\n",
@@ -868,6 +887,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"## Plot the ROC curve, no need for pandas as this uses the modelSummary object\n",
 							"modelSummary = lrModel.stages[-1].summary\n",
@@ -903,7 +923,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f0d82b27-e29b-4120-86d5-8014b6e52a0c"
+						"spark.autotune.trackingId": "75454d26-2887-4e18-945c-f019ef203ed3"
 					}
 				},
 				"metadata": {
@@ -921,7 +941,6 @@
 				"cells": [
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"# Using Azure Open Datasets in Synapse - Enrich NYC Green Taxi Data with Holiday and Weather\n",
 							"\n",
@@ -933,7 +952,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"## Data loading \n",
 							"Let's first load the [NYC green taxi trip records](https://azure.microsoft.com/en-us/services/open-datasets/catalog/nyc-taxi-limousine-commission-green-taxi-trip-records/). The Open Datasets package contains a class representing each data source (NycTlcGreen for example) to easily filter date parameters before downloading."
@@ -941,7 +959,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azureml.opendatasets import NycTlcGreen\n",
 							"\n",
@@ -958,7 +975,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Display 5 rows\n",
 							"\n",
@@ -969,7 +985,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"Now that the initial data is loaded. Let's do some projection on the data to \n",
 							"- create new columns for the month number, day of month, day of week, and hour of day. These info is going to be used in the training model to factor in time-based seasonality.\n",
@@ -978,7 +993,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Extract month, day of month, and day of week from pickup datetime and add a static column for the country code to join holiday data. \n",
 							"\n",
@@ -996,7 +1010,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"Remove some of the columns that won't need for modeling or additional feature building.\n",
 							"\n",
@@ -1006,7 +1019,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Remove unused columns from nyc green taxi data\n",
 							"\n",
@@ -1023,7 +1035,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Display 5 rows\n",
 							"nyc_tlc_df_clean.show(5)"
@@ -1033,7 +1044,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"## Enrich with holiday data\n",
 							"Now that we have taxi data downloaded and roughly prepared, add in holiday data as additional features. Holiday-specific features will assist model accuracy, as major holidays are times where taxi demand increases dramatically and supply becomes limited. \n",
@@ -1044,7 +1054,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azureml.opendatasets import PublicHolidays\n",
 							"\n",
@@ -1059,14 +1068,12 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"Rename the countryRegionCode and date columns to match the respective field names from the taxi data, and also normalize the time so it can be used as a key. "
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"hol_df_clean = hol_df.withColumnRenamed('countryRegionCode','country_code')\\\n",
 							"            .withColumn('datetime',f.to_date('date'))\n",
@@ -1078,14 +1085,12 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"Next, join the holiday data with the taxi data by performing a left-join. This will preserve all records from taxi data, but add in holiday data where it exists for the corresponding datetime and country_code, which in this case is always \"US\". Preview the data to verify that they were merged correctly."
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# enrich taxi data with holiday data\n",
 							"nyc_taxi_holiday_df = nyc_tlc_df_clean.join(hol_df_clean, on = ['datetime', 'country_code'] , how = 'left')\n",
@@ -1097,7 +1102,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Create a temp table and filter out non empty holiday rows\n",
 							"\n",
@@ -1109,7 +1113,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"## Enrich with weather data¶\n",
 							"\n",
@@ -1118,7 +1121,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azureml.opendatasets import NoaaIsdWeather\n",
 							"\n",
@@ -1130,7 +1132,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"isd_df.show(5, truncate = False)"
 						],
@@ -1139,7 +1140,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Filter out weather info for new york city, remove the recording with null temperature \n",
 							"\n",
@@ -1156,7 +1156,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Remove unused columns\n",
 							"\n",
@@ -1171,7 +1170,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"Next group the weather data so that you have daily aggregated weather values. \n",
 							""
@@ -1179,7 +1177,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Enrich weather data with aggregation statistics\n",
 							"\n",
@@ -1191,7 +1188,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"weather_df_grouped.show(5)"
 						],
@@ -1200,7 +1196,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Rename columns\n",
 							"\n",
@@ -1214,14 +1209,12 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"Merge the taxi and holiday data you prepared with the new weather data. This time you only need the datetime key, and again perform a left-join of the data. Run the describe() function on the new dataframe to see summary statistics for each field."
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# enrich taxi data with weather\n",
 							"nyc_taxi_holiday_weather_df = nyc_taxi_holiday_df.join(weather_df_grouped, on = 'datetime' , how = 'left')\n",
@@ -1232,7 +1225,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"nyc_taxi_holiday_weather_df.show(5)"
 						],
@@ -1254,7 +1246,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"The summary statistics shows that the totalAmount field has negative values, which don't make sense in the context.\n",
 							"\n",
@@ -1263,7 +1254,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Remove invalid rows with less than 0 taxi fare or tip\n",
 							"final_df = nyc_taxi_holiday_weather_df.filter(nyc_taxi_holiday_weather_df.tipAmount > 0)\\\n",
@@ -1274,7 +1264,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"## Cleaning up the existing Database\n",
 							"\n",
@@ -1285,7 +1274,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"spark.sql(\"DROP TABLE IF EXISTS NYCTaxi.nyc_taxi_holiday_weather\"); "
 						],
@@ -1294,7 +1282,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"spark.sql(\"DROP DATABASE IF EXISTS NYCTaxi\"); \n",
 							"spark.sql(\"CREATE DATABASE NYCTaxi\"); \n",
@@ -1305,7 +1292,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"## Creating a new table\n",
 							"We create a nyc_taxi_holiday_weather table from the nyc_taxi_holiday_weather dataframe.\n",
@@ -1314,7 +1300,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from pyspark.sql import SparkSession\n",
 							"from pyspark.sql.types import *\n",
@@ -1447,6 +1432,150 @@
 						},
 						"source": [
 							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/nyxtaxidatasave')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark32",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "224g",
+					"driverCores": 32,
+					"executorMemory": "224g",
+					"executorCores": 32,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "57f2bb9c-ca5f-43d6-a15d-a9c336c09e1d"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/80ef7369-572a-4abd-b09a-033367f44858/resourceGroups/mlopsdeveast/providers/Microsoft.Synapse/workspaces/synpasedl/bigDataPools/spark32",
+						"name": "spark32",
+						"type": "Spark",
+						"endpoint": "https://synpasedl.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark32",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 10,
+						"cores": 32,
+						"memory": 224
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import matplotlib.pyplot as plt\r\n",
+							"\r\n",
+							"from pyspark.sql.functions import unix_timestamp\r\n",
+							"\r\n",
+							"from pyspark.sql import SparkSession\r\n",
+							"from pyspark.sql.types import *\r\n",
+							"from pyspark.sql.functions import *\r\n",
+							"\r\n",
+							"from pyspark.ml import Pipeline\r\n",
+							"from pyspark.ml import PipelineModel\r\n",
+							"from pyspark.ml.feature import RFormula\r\n",
+							"from pyspark.ml.feature import OneHotEncoder, StringIndexer, VectorIndexer\r\n",
+							"from pyspark.ml.classification import LogisticRegression\r\n",
+							"from pyspark.mllib.evaluation import BinaryClassificationMetrics\r\n",
+							"from pyspark.ml.evaluation import BinaryClassificationEvaluator"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Import NYC yellow cab data from Azure Open Datasets\r\n",
+							"from azureml.opendatasets import NycTlcYellow\r\n",
+							"\r\n",
+							"from datetime import datetime\r\n",
+							"from dateutil import parser\r\n",
+							"\r\n",
+							"end_date = parser.parse('2022-05-08 00:00:00')\r\n",
+							"start_date = parser.parse('2022-05-01 00:00:00')\r\n",
+							"\r\n",
+							"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\r\n",
+							"nyc_tlc_df = nyc_tlc.to_spark_dataframe()"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"nyc_tlc_df.count"
 						],
 						"outputs": [],
 						"execution_count": null
