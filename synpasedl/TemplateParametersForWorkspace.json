@@ -29,6 +29,18 @@
 		"bbaccstorageold_properties_typeProperties_url": {
 			"value": "https://accsynapsestorage.dfs.core.windows.net/"
 		},
+		"isd_sasUri": {
+			"value": ""
+		},
+		"nyc_tlc_fhv_sasUri": {
+			"value": ""
+		},
+		"nyc_tlc_green_sasUri": {
+			"value": ""
+		},
+		"nyc_tlc_yellow_sasUri": {
+			"value": ""
+		},
 		"synpasedl-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://synpasedlstore.dfs.core.windows.net"
 		}
