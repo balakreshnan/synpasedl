@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "57f2bb9c-ca5f-43d6-a15d-a9c336c09e1d"
+				"spark.autotune.trackingId": "24833e25-bb1c-44d8-824e-99ce013d8535"
 			}
 		},
 		"metadata": {
@@ -107,13 +107,13 @@
 					"from datetime import datetime\r\n",
 					"from dateutil import parser\r\n",
 					"\r\n",
-					"end_date = parser.parse('2022-05-08 00:00:00')\r\n",
-					"start_date = parser.parse('2022-05-01 00:00:00')\r\n",
+					"end_date = parser.parse('2018-12-31 00:00:00')\r\n",
+					"start_date = parser.parse('2018-01-01 00:00:00')\r\n",
 					"\r\n",
 					"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\r\n",
 					"nyc_tlc_df = nyc_tlc.to_spark_dataframe()"
 				],
-				"execution_count": null
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -129,9 +129,89 @@
 					}
 				},
 				"source": [
-					"nyc_tlc_df.count"
+					"nyc_tlc_df.count()"
 				],
-				"execution_count": null
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"nyc_tlc_df.repartition(5).write.mode(\"overwrite\").parquet('abfss://root@synpasedlstore.dfs.core.windows.net/yellowtaxi/')"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from azureml.opendatasets import NycTlcGreen\r\n",
+					"\r\n",
+					"from datetime import datetime\r\n",
+					"from dateutil import parser\r\n",
+					"end_date = parser.parse('2018-12-31')\r\n",
+					"start_date = parser.parse('2018-01-01')\r\n",
+					"\r\n",
+					"nyc_tlc = NycTlcGreen(start_date=start_date, end_date=end_date)\r\n",
+					"nyc_tlc_dfg = nyc_tlc.to_spark_dataframe()"
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"nyc_tlc_dfg.count()"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"nyc_tlc_dfg.repartition(1).write.mode(\"overwrite\").parquet('abfss://root@synpasedlstore.dfs.core.windows.net/greentaxi/')"
+				],
+				"execution_count": 29
 			}
 		]
 	}
