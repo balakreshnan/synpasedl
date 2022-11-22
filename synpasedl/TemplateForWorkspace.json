@@ -343,6 +343,7 @@
 					},
 					"columnDelimiter": "\t",
 					"escapeChar": "\\",
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
 				"schema": [
