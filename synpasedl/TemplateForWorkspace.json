@@ -1868,7 +1868,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fc1ed073-b8bd-4aa4-982c-91c7d9710f58"
+						"spark.autotune.trackingId": "b40ca7e6-41bd-4a4c-b1fa-2c06b87b1260"
 					}
 				},
 				"metadata": {
@@ -1935,6 +1935,7 @@
 							"#cogsvc = TokenLibrary.getSecretWithLS(\"mlopskeyv1\", \"cogsvc\")\r\n",
 							"# getSecret(akvName: String, secret: String, linkedService: String)\r\n",
 							"# cogsvc = TokenLibrary.getSecret(\"mlopskeyv1\", \"cogsvc\", \"mlopskey1\")\r\n",
+							"# https://learn.microsoft.com/en-us/azure/search/search-synapseml-cognitive-services\r\n",
 							"cogsvc= mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"cogsvc\")\r\n",
 							"cogsearchname= mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"cogsearchname\")\r\n",
 							"cogsearchkey= mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"cogsearchkey\")\r\n",
