@@ -17,6 +17,12 @@
 		"jcinput_connectionString": {
 			"value": ""
 		},
+		"lipsearch_key": {
+			"value": ""
+		},
+		"lipstorage_connectionString": {
+			"value": ""
+		},
 		"synpasedl-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
@@ -31,6 +37,12 @@
 		},
 		"isd_sasUri": {
 			"value": ""
+		},
+		"lipsearch_properties_typeProperties_url": {
+			"value": "https://lipsearch.search.windows.net"
+		},
+		"lipstore_properties_typeProperties_serviceEndpoint": {
+			"value": "https://lipstore.blob.core.windows.net/"
 		},
 		"mlopskey1_properties_typeProperties_baseUrl": {
 			"value": "https://mlopskeyv1.vault.azure.net/"
