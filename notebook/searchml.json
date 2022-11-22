@@ -1,0 +1,300 @@
+{
+	"name": "searchml",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spark32",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "224g",
+			"driverCores": 32,
+			"executorMemory": "224g",
+			"executorCores": 32,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "5b5afc75-3a4f-4c2d-a150-59e841d69bef"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/80ef7369-572a-4abd-b09a-033367f44858/resourceGroups/mlopsdeveast/providers/Microsoft.Synapse/workspaces/synpasedl/bigDataPools/spark32",
+				"name": "spark32",
+				"type": "Spark",
+				"endpoint": "https://synpasedl.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark32",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 32,
+				"memory": 224,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"%%configure -f\r\n",
+					"{\r\n",
+					"  \"name\": \"synapseml\",\r\n",
+					"  \"conf\": {\r\n",
+					"      \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.10.0\",\r\n",
+					"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
+					"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,com.fasterxml.jackson.core:jackson-databind\",\r\n",
+					"      \"spark.yarn.user.classpath.first\": \"true\"\r\n",
+					"  }\r\n",
+					"}"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#cogsvc = token_library.GetSecret(\"mlopskeyv1\", \"cogsvc\", \"mlopskey1\")\r\n",
+					"#cogsvc = TokenLibrary.getSecretWithLS(\"mlopskeyv1\", \"cogsvc\")\r\n",
+					"# getSecret(akvName: String, secret: String, linkedService: String)\r\n",
+					"# cogsvc = TokenLibrary.getSecret(\"mlopskeyv1\", \"cogsvc\", \"mlopskey1\")\r\n",
+					"cogsvc= mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"cogsvc\")\r\n",
+					"cogsearchname= mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"cogsearchname\")\r\n",
+					"cogsearchkey= mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"cogsearchkey\")\r\n",
+					"#print(cogsvc)"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import os\r\n",
+					"from pyspark.sql.functions import udf, trim, split, explode, col, monotonically_increasing_id, lit\r\n",
+					"from pyspark.sql.types import StringType\r\n",
+					"from synapse.ml.core.spark import FluentAPI\r\n",
+					"\r\n",
+					"cognitive_services_key = cogsvc\r\n",
+					"cognitive_services_region = \"eastus2\"\r\n",
+					"\r\n",
+					"search_service = cogsearchname\r\n",
+					"search_key = cogsearchkey\r\n",
+					"search_index = \"synapseindex\""
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"def blob_to_url(blob):\r\n",
+					"    [prefix, postfix] = blob.split(\"@\")\r\n",
+					"    container = prefix.split(\"/\")[-1]\r\n",
+					"    split_postfix = postfix.split(\"/\")\r\n",
+					"    account = split_postfix[0]\r\n",
+					"    filepath = \"/\".join(split_postfix[1:])\r\n",
+					"    return \"https://{}/{}/{}\".format(account, container, filepath)\r\n",
+					"\r\n",
+					"\r\n",
+					"df2 = (spark.read.format(\"binaryFile\")\r\n",
+					"    .load(\"wasbs://ignite2021@mmlsparkdemo.blob.core.windows.net/form_subset/*\")\r\n",
+					"    .select(\"path\")\r\n",
+					"    .limit(10)\r\n",
+					"    .select(udf(blob_to_url, StringType())(\"path\").alias(\"url\"))\r\n",
+					"    .cache())\r\n",
+					"    \r\n",
+					"display(df2)"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from synapse.ml.cognitive import AnalyzeInvoices\r\n",
+					"\r\n",
+					"analyzed_df = (AnalyzeInvoices()\r\n",
+					"    .setSubscriptionKey(cognitive_services_key)\r\n",
+					"    .setLocation(cognitive_services_region)\r\n",
+					"    .setImageUrlCol(\"url\")\r\n",
+					"    .setOutputCol(\"invoices\")\r\n",
+					"    .setErrorCol(\"errors\")\r\n",
+					"    .setConcurrency(5)\r\n",
+					"    .transform(df2)\r\n",
+					"    .cache())\r\n",
+					"\r\n",
+					"display(analyzed_df)"
+				],
+				"execution_count": 24
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from synapse.ml.cognitive import FormOntologyLearner\r\n",
+					"\r\n",
+					"itemized_df = (FormOntologyLearner()\r\n",
+					"    .setInputCol(\"invoices\")\r\n",
+					"    .setOutputCol(\"extracted\")\r\n",
+					"    .fit(analyzed_df)\r\n",
+					"    .transform(analyzed_df)\r\n",
+					"    .select(\"url\", \"extracted.*\").select(\"*\", explode(col(\"Items\")).alias(\"Item\"))\r\n",
+					"    .drop(\"Items\").select(\"Item.*\", \"*\").drop(\"Item\"))\r\n",
+					"\r\n",
+					"display(itemized_df)"
+				],
+				"execution_count": 25
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from synapse.ml.cognitive import Translate\r\n",
+					"\r\n",
+					"translated_df = (Translate()\r\n",
+					"    .setSubscriptionKey(cognitive_services_key)\r\n",
+					"    .setLocation(cognitive_services_region)\r\n",
+					"    .setTextCol(\"Description\")\r\n",
+					"    .setErrorCol(\"TranslationError\")\r\n",
+					"    .setOutputCol(\"output\")\r\n",
+					"    .setToLanguage([\"zh-Hans\", \"fr\", \"ru\", \"cy\"])\r\n",
+					"    .setConcurrency(5)\r\n",
+					"    .transform(itemized_df)\r\n",
+					"    .withColumn(\"Translations\", col(\"output.translations\")[0])\r\n",
+					"    .drop(\"output\", \"TranslationError\")\r\n",
+					"    .cache())\r\n",
+					"\r\n",
+					"display(translated_df)"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from synapse.ml.cognitive import *\r\n",
+					"\r\n",
+					"(translated_df.withColumn(\"DocID\", monotonically_increasing_id().cast(\"string\"))\r\n",
+					"    .withColumn(\"SearchAction\", lit(\"upload\"))\r\n",
+					"    .writeToAzureSearch(\r\n",
+					"        subscriptionKey=search_key,\r\n",
+					"        actionCol=\"SearchAction\",\r\n",
+					"        serviceName=search_service,\r\n",
+					"        indexName=search_index,\r\n",
+					"        keyCol=\"DocID\",\r\n",
+					"    ))"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import requests\r\n",
+					"\r\n",
+					"url = \"https://{}.search.windows.net/indexes/{}/docs/search?api-version=2020-06-30\".format(search_service, search_index)\r\n",
+					"requests.post(url, json={\"search\": \"door\", \"count\": \"true\", \"select\": \"Description, Translations\"}, headers={\"api-key\": search_key}).json()"
+				],
+				"execution_count": 29
+			}
+		]
+	}
+}
