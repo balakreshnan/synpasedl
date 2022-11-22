@@ -122,6 +122,19 @@
 							"enableStaging": false,
 							"translator": {
 								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "content",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "content",
+											"type": "String"
+										}
+									}
+								],
 								"typeConversion": true,
 								"typeConversionSettings": {
 									"allowDataTruncation": true,
@@ -513,7 +526,7 @@
 				"type": "AzureSearchIndex",
 				"schema": [],
 				"typeProperties": {
-					"indexName": "azureblob-index"
+					"indexName": "adfindex"
 				}
 			},
 			"dependsOn": [
