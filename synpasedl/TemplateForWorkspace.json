@@ -125,6 +125,17 @@
 								"mappings": [
 									{
 										"source": {
+											"name": "key",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "id",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
 											"name": "content",
 											"type": "String",
 											"physicalType": "String"
@@ -354,7 +365,7 @@
 						"fileName": "audiocall1.txt",
 						"container": "lippercalltext"
 					},
-					"columnDelimiter": "\t",
+					"columnDelimiter": ",",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
