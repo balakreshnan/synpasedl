@@ -1,0 +1,10 @@
+{
+	"name": "mlopskey1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://mlopskeyv1.vault.azure.net/"
+		}
+	}
+}
