@@ -32,6 +32,9 @@
 		"isd_sasUri": {
 			"value": ""
 		},
+		"mlopskey1_properties_typeProperties_baseUrl": {
+			"value": "https://mlopskeyv1.vault.azure.net/"
+		},
 		"nyc_tlc_fhv_sasUri": {
 			"value": ""
 		},
