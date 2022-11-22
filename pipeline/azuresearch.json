@@ -45,17 +45,6 @@
 									"name": "content",
 									"type": "String"
 								}
-							},
-							{
-								"source": {
-									"name": "content",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "locations",
-									"type": "String"
-								}
 							}
 						],
 						"typeConversion": true,
