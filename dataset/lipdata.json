@@ -13,7 +13,7 @@
 				"fileName": "audiocall1.txt",
 				"container": "lippercalltext"
 			},
-			"columnDelimiter": "\t",
+			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
