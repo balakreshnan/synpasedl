@@ -409,7 +409,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"container": "wwi"
+						"container": "database1"
 					}
 				}
 			},
@@ -431,7 +431,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "wwi",
+						"folderPath": "database1",
 						"fileSystem": "hackathon1"
 					}
 				}
