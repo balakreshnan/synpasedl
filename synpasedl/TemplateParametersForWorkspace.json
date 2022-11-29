@@ -8,6 +8,9 @@
 		"RestService1_password": {
 			"value": ""
 		},
+		"VijayStorage_connectionString": {
+			"value": ""
+		},
 		"bbaccstorageold_accountKey": {
 			"value": ""
 		},
