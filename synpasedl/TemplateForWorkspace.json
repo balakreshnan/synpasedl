@@ -409,7 +409,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"container": "database1"
+						"container": "wwi"
 					}
 				}
 			},
