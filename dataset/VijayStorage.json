@@ -1,0 +1,16 @@
+{
+	"name": "VijayStorage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "VijayStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation"
+			}
+		}
+	}
+}

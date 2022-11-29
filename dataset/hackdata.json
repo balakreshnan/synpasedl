@@ -1,0 +1,17 @@
+{
+	"name": "hackdata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synpasedl-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "hackathon1"
+			}
+		}
+	}
+}
