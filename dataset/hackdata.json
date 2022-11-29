@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"folderPath": "wwi",
 				"fileSystem": "hackathon1"
 			}
 		}
