@@ -27,7 +27,7 @@
 			"value": ""
 		},
 		"synpasedl-WorkspaceDefaultSqlServer_connectionString": {
-			"value": ""
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synpasedl.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://www.yahoo.com"
