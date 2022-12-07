@@ -1,0 +1,143 @@
+{
+	"name": "tpchcustomerdaily",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "intpchcust",
+						"type": "DatasetReference"
+					},
+					"name": "Customer"
+				},
+				{
+					"dataset": {
+						"referenceName": "intpchOrders",
+						"type": "DatasetReference"
+					},
+					"name": "Orders"
+				},
+				{
+					"dataset": {
+						"referenceName": "intpchlineitem",
+						"type": "DatasetReference"
+					},
+					"name": "LineItem"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "outdailyCorders",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          C_CUSTKEY as decimal(9,0),",
+				"          C_NAME as string,",
+				"          C_ADDRESS as string,",
+				"          C_NATIONKEY as decimal(38,0),",
+				"          C_PHONE as string,",
+				"          C_ACCTBAL as decimal(9,2),",
+				"          C_MKTSEGMENT as string,",
+				"          C_COMMENT as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> Customer",
+				"source(output(",
+				"          O_ORDERKEY as decimal(18,0),",
+				"          O_CUSTKEY as decimal(9,0),",
+				"          O_ORDERSTATUS as string,",
+				"          O_TOTALPRICE as decimal(9,2),",
+				"          O_ORDERDATE as date,",
+				"          O_ORDERPRIORITY as string,",
+				"          O_CLERK as string,",
+				"          O_SHIPPRIORITY as decimal(38,0),",
+				"          O_COMMENT as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> Orders",
+				"source(output(",
+				"          L_ORDERKEY as decimal(18,0),",
+				"          L_PARTKEY as decimal(9,0),",
+				"          L_SUPPKEY as decimal(9,0),",
+				"          L_LINENUMBER as decimal(38,0),",
+				"          L_QUANTITY as decimal(4,2),",
+				"          L_EXTENDEDPRICE as decimal(9,2),",
+				"          L_DISCOUNT as decimal(12,2),",
+				"          L_TAX as decimal(12,2),",
+				"          L_RETURNFLAG as string,",
+				"          L_LINESTATUS as string,",
+				"          L_SHIPDATE as date,",
+				"          L_COMMITDATE as date,",
+				"          L_RECEIPTDATE as date,",
+				"          L_SHIPINSTRUCT as string,",
+				"          L_SHIPMODE as string,",
+				"          L_COMMENT as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> LineItem",
+				"Orders, LineItem join(O_ORDERKEY == L_ORDERKEY,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(year = year(O_ORDERDATE),",
+				"          month = month(O_ORDERDATE),",
+				"          day = dayOfMonth(O_ORDERDATE)) ~> derivedColumn1",
+				"derivedColumn1, Customer join(O_CUSTKEY == C_CUSTKEY,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"join2 aggregate(groupBy(year,",
+				"          month,",
+				"          day,",
+				"          C_CUSTKEY),",
+				"     Tprice = sum(O_TOTALPRICE),",
+				"          Tdicount = sum(L_DISCOUNT),",
+				"          Tqty = sum(L_QUANTITY),",
+				"          Ttax = sum(L_TAX),",
+				"          Titem = count(L_LINENUMBER),",
+				"          Textprice = sum(L_EXTENDEDPRICE)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('key',",
+				"          0,",
+				"          year,",
+				"          month",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

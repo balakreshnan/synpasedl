@@ -1,0 +1,101 @@
+{
+	"name": "intpchlineitem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synpasedl-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "tpch/LINEITEM",
+				"fileSystem": "root"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "L_ORDERKEY",
+				"type": "DECIMAL",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "L_PARTKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "L_SUPPKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "L_LINENUMBER",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "L_QUANTITY",
+				"type": "DECIMAL",
+				"precision": 4,
+				"scale": 2
+			},
+			{
+				"name": "L_EXTENDEDPRICE",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "L_DISCOUNT",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 2
+			},
+			{
+				"name": "L_TAX",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 2
+			},
+			{
+				"name": "L_RETURNFLAG",
+				"type": "UTF8"
+			},
+			{
+				"name": "L_LINESTATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "L_SHIPDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "L_COMMITDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "L_RECEIPTDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "L_SHIPINSTRUCT",
+				"type": "UTF8"
+			},
+			{
+				"name": "L_SHIPMODE",
+				"type": "UTF8"
+			},
+			{
+				"name": "L_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}

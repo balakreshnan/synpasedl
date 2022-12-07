@@ -1,0 +1,65 @@
+{
+	"name": "intpchOrders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synpasedl-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "tpch/ORDERS",
+				"fileSystem": "root"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "O_ORDERKEY",
+				"type": "DECIMAL",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "O_CUSTKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "O_ORDERSTATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "O_TOTALPRICE",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "O_ORDERDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "O_ORDERPRIORITY",
+				"type": "UTF8"
+			},
+			{
+				"name": "O_CLERK",
+				"type": "UTF8"
+			},
+			{
+				"name": "O_SHIPPRIORITY",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "O_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}

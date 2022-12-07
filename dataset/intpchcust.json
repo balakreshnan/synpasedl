@@ -1,0 +1,59 @@
+{
+	"name": "intpchcust",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synpasedl-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "tpch/CUSTOMER",
+				"fileSystem": "root"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "C_CUSTKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "C_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "C_ADDRESS",
+				"type": "UTF8"
+			},
+			{
+				"name": "C_NATIONKEY",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "C_PHONE",
+				"type": "UTF8"
+			},
+			{
+				"name": "C_ACCTBAL",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "C_MKTSEGMENT",
+				"type": "UTF8"
+			},
+			{
+				"name": "C_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}
