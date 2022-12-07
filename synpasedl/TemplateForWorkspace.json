@@ -346,7 +346,7 @@
 							},
 							"staging": {},
 							"compute": {
-								"coreCount": 48,
+								"coreCount": 80,
 								"computeType": "MemoryOptimized"
 							},
 							"traceLevel": "Fine"
@@ -360,8 +360,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/tpchcustomerdaily')]",
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('workspaceId'), '/dataflows/tpchcustomerdaily')]"
 			]
 		},
 		{
