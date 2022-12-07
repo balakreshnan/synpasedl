@@ -23,7 +23,9 @@
 						"coreCount": 80,
 						"computeType": "MemoryOptimized"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "Fine",
+					"runConcurrently": false,
+					"continueOnError": true
 				}
 			}
 		],
