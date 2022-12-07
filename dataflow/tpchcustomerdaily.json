@@ -102,7 +102,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> LineItem",
 				"Orders, LineItem join(O_ORDERKEY == L_ORDERKEY,",
-				"     joinType:'inner',",
+				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
