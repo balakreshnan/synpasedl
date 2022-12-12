@@ -24,7 +24,6 @@
 						"computeType": "MemoryOptimized"
 					},
 					"traceLevel": "Fine",
-					"runConcurrently": false,
 					"continueOnError": true
 				}
 			}
