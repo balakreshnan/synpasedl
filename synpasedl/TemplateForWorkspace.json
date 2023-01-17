@@ -5116,7 +5116,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "5",
 						"spark.dynamicAllocation.maxExecutors": "5",
-						"spark.autotune.trackingId": "6c6406dd-90e1-40cb-a8ea-75b8e4c7a7ee"
+						"spark.autotune.trackingId": "6b98809b-3dbf-402a-95fb-8c668f1406a6"
 					}
 				},
 				"metadata": {
@@ -5249,14 +5249,14 @@
 						},
 						"source": [
 							"%%pyspark\r\n",
-							"df = spark.read.load('abfss://metricfolder@synpasedlstore.dfs.core.windows.net/train_set.csv', format='csv'\r\n",
+							"df = spark.read.load('abfss://metricfolder@synpasedlstore.dfs.core.windows.net/sensor.csv', format='csv'\r\n",
 							"## If header exists uncomment line below\r\n",
 							", header=True\r\n",
 							")\r\n",
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -5272,10 +5272,10 @@
 							}
 						},
 						"source": [
-							"!wget https://sparkdemostorage.blob.core.windows.net/mvadcsvdata/spark-demo-data.csv"
+							"#!wget https://sparkdemostorage.blob.core.windows.net/mvadcsvdata/spark-demo-data.csv"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -5291,15 +5291,34 @@
 							}
 						},
 						"source": [
-							"df = spark.read.format(\"csv\").option(\"header\", True).load(\"wasbs://metricfolder@synpasedlstore.blob.core.windows.net/train_set.csv\")\r\n",
-							"df = df.withColumn(\"sensor_1\", col(\"sensor_1\").cast(DoubleType())) \\\r\n",
-							"    .withColumn(\"sensor_2\", col(\"sensor_2\").cast(DoubleType())) \\\r\n",
-							"    .withColumn(\"sensor_3\", col(\"sensor_3\").cast(DoubleType()))\r\n",
+							"#df = spark.read.format(\"csv\").option(\"header\", True).load(\"wasbs://mvadcsvdata@sparkdemostorage.blob.core.windows.net/spark-demo-data.csv\")"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#df = spark.read.format(\"csv\").option(\"header\", True).load(\"wasbs://metricfolder@synpasedlstore.blob.core.windows.net/train_set.csv\")\r\n",
+							"df = df.withColumn(\"sensor_01\", col(\"sensor_01\").cast(DoubleType())) \\\r\n",
+							"    .withColumn(\"sensor_02\", col(\"sensor_02\").cast(DoubleType())) \\\r\n",
+							"    .withColumn(\"sensor_03\", col(\"sensor_03\").cast(DoubleType()))\r\n",
 							"\r\n",
 							"df.show(10)"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -5336,15 +5355,15 @@
 							"    .setLocation(\"eastus\")\r\n",
 							"    .setStartTime(startTime)\r\n",
 							"    .setEndTime(endTime)\r\n",
-							"    .setContainerName(containerName)\r\n",
+							"    #.setContainerName(containerName)\r\n",
 							"    .setIntermediateSaveDir(intermediateSaveDir)\r\n",
 							"    .setTimestampCol(timestampColumn)\r\n",
 							"    .setInputCols(inputColumns)\r\n",
-							"    .setSlidingWindow(200)\r\n",
-							"    .setConnectionString(connectionString))"
+							"    .setSlidingWindow(200))\r\n",
+							"    #.setConnectionString(connectionString))"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -5364,7 +5383,7 @@
 							"type(model)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
