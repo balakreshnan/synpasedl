@@ -5116,7 +5116,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "5",
 						"spark.dynamicAllocation.maxExecutors": "5",
-						"spark.autotune.trackingId": "6b98809b-3dbf-402a-95fb-8c668f1406a6"
+						"spark.autotune.trackingId": "d7af8510-579c-4120-9372-58a14c835464"
 					}
 				},
 				"metadata": {
@@ -5228,7 +5228,7 @@
 							"import synapse.ml"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -5256,7 +5256,7 @@
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
@@ -5334,36 +5334,180 @@
 							}
 						},
 						"source": [
-							"#Input your key vault name and anomaly key name in key vault.\r\n",
-							"anomalyKey = mssparkutils.credentials.getSecret(\"mlopskeyv1\",\"anomalykey\")\r\n",
-							"#Input your key vault name and connection string name in key vault.\r\n",
-							"connectionString = mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"metricstorageconnstring\")\r\n",
+							"import os\r\n",
+							"from pyspark.sql import SparkSession\r\n",
+							"from synapse.ml.core.platform import find_secret\r\n",
 							"\r\n",
-							"#Specify information about your data.\r\n",
-							"startTime = \"2021-01-01T00:00:00Z\"\r\n",
-							"endTime = \"2021-01-02T09:18:00Z\"\r\n",
+							"# Bootstrap Spark Session\r\n",
+							"spark = SparkSession.builder.getOrCreate()"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# An Anomaly Dectector subscription key\r\n",
+							"#anomalyKey = find_secret(\"anomaly-api-key\")\r\n",
+							"anomalyKey = mssparkutils.credentials.getSecret(\"mlopskeyv1\",\"anomalykey\")\r\n",
+							"# Your storage account name\r\n",
+							"storageName = \"synpasedlstore\"\r\n",
+							"# A connection string to your blob storage account\r\n",
+							"#storageKey = find_secret(\"madtest-storage-key\")\r\n",
+							"storageKey = \"l86dmmORzfrNQN1LcNosdYFaE1ET+ohUBWfaNXabC3nny5OfJWBDsK0T3HC+gMbSdH5kexDnJhFZ+AStrv675g==\"\r\n",
+							"# A place to save intermediate MVAD results\r\n",
+							"intermediateSaveDir = (\r\n",
+							"    \"wasbs://metricfolder@synpasedlstore.blob.core.windows.net/intermediateData\"\r\n",
+							")\r\n",
+							"# The location of the anomaly detector resource that you created\r\n",
+							"location = \"eastus\""
+						],
+						"outputs": [],
+						"execution_count": 25
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"spark.sparkContext._jsc.hadoopConfiguration().set(\r\n",
+							"    f\"fs.azure.account.key.{storageName}.blob.core.windows.net\", storageKey\r\n",
+							")"
+						],
+						"outputs": [],
+						"execution_count": 26
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import numpy as np\r\n",
+							"import pandas as pd\r\n",
+							"\r\n",
+							"import pyspark\r\n",
+							"from pyspark.sql.functions import col\r\n",
+							"from pyspark.sql.functions import lit\r\n",
+							"from pyspark.sql.types import DoubleType\r\n",
+							"import matplotlib.pyplot as plt\r\n",
+							"\r\n",
+							"import synapse.ml\r\n",
+							"from synapse.ml.cognitive import *"
+						],
+						"outputs": [],
+						"execution_count": 27
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df = (\r\n",
+							"    spark.read.format(\"csv\")\r\n",
+							"    .option(\"header\", \"true\")\r\n",
+							"    .load(\"wasbs://publicwasb@mmlspark.blob.core.windows.net/MVAD/sample.csv\")\r\n",
+							")"
+						],
+						"outputs": [],
+						"execution_count": 28
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df = (\r\n",
+							"    df.withColumn(\"sensor_1\", col(\"sensor_1\").cast(DoubleType()))\r\n",
+							"    .withColumn(\"sensor_2\", col(\"sensor_2\").cast(DoubleType()))\r\n",
+							"    .withColumn(\"sensor_3\", col(\"sensor_3\").cast(DoubleType()))\r\n",
+							")\r\n",
+							"\r\n",
+							"# Let's inspect the dataframe:\r\n",
+							"df.show(5)"
+						],
+						"outputs": [],
+						"execution_count": 29
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"trainingStartTime = \"2020-06-01T12:00:00Z\"\r\n",
+							"trainingEndTime = \"2020-07-02T17:55:00Z\"\r\n",
 							"timestampColumn = \"timestamp\"\r\n",
 							"inputColumns = [\"sensor_1\", \"sensor_2\", \"sensor_3\"]\r\n",
-							"#Specify the container you created in Storage account, you could also initialize a new name here, and Synapse will help you create that container automatically.\r\n",
-							"containerName = \"metricfolder\"\r\n",
-							"#Set a folder name in Storage account to store the intermediate data.\r\n",
-							"intermediateSaveDir = \"intermediatedata\"\r\n",
 							"\r\n",
-							"simpleMultiAnomalyEstimator = (FitMultivariateAnomaly()\r\n",
+							"estimator = (\r\n",
+							"    FitMultivariateAnomaly()\r\n",
 							"    .setSubscriptionKey(anomalyKey)\r\n",
-							"#In .setLocation, specify the region of your Anomaly Detector resource, use lowercase letter like: eastus.\r\n",
-							"    .setLocation(\"eastus\")\r\n",
-							"    .setStartTime(startTime)\r\n",
-							"    .setEndTime(endTime)\r\n",
-							"    #.setContainerName(containerName)\r\n",
+							"    .setLocation(location)\r\n",
+							"    .setStartTime(trainingStartTime)\r\n",
+							"    .setEndTime(trainingEndTime)\r\n",
 							"    .setIntermediateSaveDir(intermediateSaveDir)\r\n",
 							"    .setTimestampCol(timestampColumn)\r\n",
 							"    .setInputCols(inputColumns)\r\n",
-							"    .setSlidingWindow(200))\r\n",
-							"    #.setConnectionString(connectionString))"
+							"    .setSlidingWindow(200)\r\n",
+							")"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 30
 					},
 					{
 						"cell_type": "code",
@@ -5379,11 +5523,10 @@
 							}
 						},
 						"source": [
-							"model = simpleMultiAnomalyEstimator.fit(df)\r\n",
-							"type(model)"
+							"model = estimator.fit(df)"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": 31
 					},
 					{
 						"cell_type": "code",
@@ -5399,45 +5542,214 @@
 							}
 						},
 						"source": [
-							"startInferenceTime = \"2021-01-02T09:19:00Z\"\r\n",
-							"endInferenceTime = \"2021-01-03T01:59:00Z\"\r\n",
-							"result = (model\r\n",
-							"      .setStartTime(startInferenceTime)\r\n",
-							"      .setEndTime(endInferenceTime)\r\n",
-							"      .setOutputCol(\"results\")\r\n",
-							"      .setErrorCol(\"errors\")\r\n",
-							"      .setTimestampCol(timestampColumn)\r\n",
-							"      .setInputCols(inputColumns)\r\n",
-							"      .transform(df))"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"rdf = (result.select(\"timestamp\",*inputColumns, \"results.contributors\", \"results.isAnomaly\", \"results.severity\").orderBy('timestamp', ascending=True).filter(col('timestamp') >= lit(startInferenceTime)).toPandas())\r\n",
+							"inferenceStartTime = \"2020-07-02T18:00:00Z\"\r\n",
+							"inferenceEndTime = \"2020-07-06T05:15:00Z\"\r\n",
 							"\r\n",
+							"result = (\r\n",
+							"    model.setStartTime(inferenceStartTime)\r\n",
+							"    .setEndTime(inferenceEndTime)\r\n",
+							"    .setOutputCol(\"results\")\r\n",
+							"    .setErrorCol(\"errors\")\r\n",
+							"    .setInputCols(inputColumns)\r\n",
+							"    .setTimestampCol(timestampColumn)\r\n",
+							"    .transform(df)\r\n",
+							")\r\n",
+							"\r\n",
+							"result.show(5)"
+						],
+						"outputs": [],
+						"execution_count": 32
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"rdf = (\r\n",
+							"    result.select(\r\n",
+							"        \"timestamp\",\r\n",
+							"        *inputColumns,\r\n",
+							"        \"results.contributors\",\r\n",
+							"        \"results.isAnomaly\",\r\n",
+							"        \"results.severity\"\r\n",
+							"    )\r\n",
+							"    .orderBy(\"timestamp\", ascending=True)\r\n",
+							"    .filter(col(\"timestamp\") >= lit(inferenceStartTime))\r\n",
+							"    .toPandas()\r\n",
+							")\r\n",
+							"\r\n",
+							"rdf"
+						],
+						"outputs": [],
+						"execution_count": 33
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
 							"def parse(x):\r\n",
 							"    if type(x) is list:\r\n",
 							"        return dict([item[::-1] for item in x])\r\n",
 							"    else:\r\n",
-							"        return {'series_0': 0, 'series_1': 0, 'series_2': 0}\r\n",
+							"        return {\"series_0\": 0, \"series_1\": 0, \"series_2\": 0}\r\n",
 							"\r\n",
-							"rdf['contributors'] = rdf['contributors'].apply(parse)\r\n",
-							"rdf = pd.concat([rdf.drop(['contributors'], axis=1), pd.json_normalize(rdf['contributors'])], axis=1)\r\n",
+							"\r\n",
+							"rdf[\"contributors\"] = rdf[\"contributors\"].apply(parse)\r\n",
+							"rdf = pd.concat(\r\n",
+							"    [rdf.drop([\"contributors\"], axis=1), pd.json_normalize(rdf[\"contributors\"])], axis=1\r\n",
+							")\r\n",
 							"rdf"
+						],
+						"outputs": [],
+						"execution_count": 34
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"minSeverity = 0.1\r\n",
+							"\r\n",
+							"\r\n",
+							"####### Main Figure #######\r\n",
+							"plt.figure(figsize=(23, 8))\r\n",
+							"plt.plot(\r\n",
+							"    rdf[\"timestamp\"],\r\n",
+							"    rdf[\"sensor_1\"],\r\n",
+							"    color=\"tab:orange\",\r\n",
+							"    line,\r\n",
+							"    linewidth=2,\r\n",
+							"    label=\"sensor_1\",\r\n",
+							")\r\n",
+							"plt.plot(\r\n",
+							"    rdf[\"timestamp\"],\r\n",
+							"    rdf[\"sensor_2\"],\r\n",
+							"    color=\"tab:green\",\r\n",
+							"    line,\r\n",
+							"    linewidth=2,\r\n",
+							"    label=\"sensor_2\",\r\n",
+							")\r\n",
+							"plt.plot(\r\n",
+							"    rdf[\"timestamp\"],\r\n",
+							"    rdf[\"sensor_3\"],\r\n",
+							"    color=\"tab:blue\",\r\n",
+							"    line,\r\n",
+							"    linewidth=2,\r\n",
+							"    label=\"sensor_3\",\r\n",
+							")\r\n",
+							"plt.grid(axis=\"y\")\r\n",
+							"plt.tick_params(axis=\"x\", which=\"both\", bottom=False, labelbottom=False)\r\n",
+							"plt.legend()\r\n",
+							"\r\n",
+							"anoms = list(rdf[\"severity\"] >= minSeverity)\r\n",
+							"_, _, ymin, ymax = plt.axis()\r\n",
+							"plt.vlines(np.where(anoms), ymin=ymin, ymax=ymax, color=\"r\", alpha=0.8)\r\n",
+							"\r\n",
+							"plt.legend()\r\n",
+							"plt.title(\r\n",
+							"    \"A plot of the values from the three sensors with the detected anomalies highlighted in red.\"\r\n",
+							")\r\n",
+							"plt.show()\r\n",
+							"\r\n",
+							"####### Severity Figure #######\r\n",
+							"plt.figure(figsize=(23, 1))\r\n",
+							"plt.tick_params(axis=\"x\", which=\"both\", bottom=False, labelbottom=False)\r\n",
+							"plt.plot(\r\n",
+							"    rdf[\"timestamp\"],\r\n",
+							"    rdf[\"severity\"],\r\n",
+							"    color=\"black\",\r\n",
+							"    line,\r\n",
+							"    linewidth=2,\r\n",
+							"    label=\"Severity score\",\r\n",
+							")\r\n",
+							"plt.plot(\r\n",
+							"    rdf[\"timestamp\"],\r\n",
+							"    [minSeverity] * len(rdf[\"severity\"]),\r\n",
+							"    color=\"red\",\r\n",
+							"    line,\r\n",
+							"    linewidth=1,\r\n",
+							"    label=\"minSeverity\",\r\n",
+							")\r\n",
+							"plt.grid(axis=\"y\")\r\n",
+							"plt.legend()\r\n",
+							"plt.ylim([0, 1])\r\n",
+							"plt.title(\"Severity of the detected anomalies\")\r\n",
+							"plt.show()\r\n",
+							"\r\n",
+							"####### Contributors Figure #######\r\n",
+							"plt.figure(figsize=(23, 1))\r\n",
+							"plt.tick_params(axis=\"x\", which=\"both\", bottom=False, labelbottom=False)\r\n",
+							"plt.bar(\r\n",
+							"    rdf[\"timestamp\"], rdf[\"series_0\"], width=2, color=\"tab:orange\", label=\"sensor_1\"\r\n",
+							")\r\n",
+							"plt.bar(\r\n",
+							"    rdf[\"timestamp\"],\r\n",
+							"    rdf[\"series_1\"],\r\n",
+							"    width=2,\r\n",
+							"    color=\"tab:green\",\r\n",
+							"    label=\"sensor_2\",\r\n",
+							"    bottom=rdf[\"series_0\"],\r\n",
+							")\r\n",
+							"plt.bar(\r\n",
+							"    rdf[\"timestamp\"],\r\n",
+							"    rdf[\"series_2\"],\r\n",
+							"    width=2,\r\n",
+							"    color=\"tab:blue\",\r\n",
+							"    label=\"sensor_3\",\r\n",
+							"    bottom=rdf[\"series_0\"] + rdf[\"series_1\"],\r\n",
+							")\r\n",
+							"plt.grid(axis=\"y\")\r\n",
+							"plt.legend()\r\n",
+							"plt.ylim([0, 1])\r\n",
+							"plt.title(\"The contribution of each sensor to the detected anomaly\")\r\n",
+							"plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 36
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
 						],
 						"outputs": [],
 						"execution_count": null
