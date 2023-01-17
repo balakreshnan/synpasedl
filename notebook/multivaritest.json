@@ -1,0 +1,284 @@
+{
+	"name": "multivaritest",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spark32",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "224g",
+			"driverCores": 32,
+			"executorMemory": "224g",
+			"executorCores": 32,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "216cd43f-d265-4711-8596-5b35131895ec"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/80ef7369-572a-4abd-b09a-033367f44858/resourceGroups/mlopsdeveast/providers/Microsoft.Synapse/workspaces/synpasedl/bigDataPools/spark32",
+				"name": "spark32",
+				"type": "Spark",
+				"endpoint": "https://synpasedl.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark32",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 32,
+				"memory": 224,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%%configure -f\r\n",
+					"{\r\n",
+					"  \"name\": \"synapseml\",\r\n",
+					"  \"conf\": {\r\n",
+					"      \"spark.jars.packages\": \" com.microsoft.azure:synapseml_2.12:0.9.5 \",\r\n",
+					"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
+					"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,io.netty:netty-tcnative-boringssl-static\",\r\n",
+					"      \"spark.yarn.user.classpath.first\": \"true\"\r\n",
+					"  }\r\n",
+					"}"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from synapse.ml.cognitive import *\r\n",
+					"from notebookutils import mssparkutils\r\n",
+					"import numpy as np\r\n",
+					"import pandas as pd\r\n",
+					"import pyspark\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"from pyspark.sql.functions import lit\r\n",
+					"from pyspark.sql.types import DoubleType\r\n",
+					"import synapse.ml"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df = spark.read.format(\"csv\").option(\"header\", True).load(\"wasbs://metricfolder@synpasedlstore.blob.core.windows.net/train_set.csv\")\r\n",
+					"df = df.withColumn(\"sensor_1\", col(\"sensor_1\").cast(DoubleType())) \\\r\n",
+					"    .withColumn(\"sensor_2\", col(\"sensor_2\").cast(DoubleType())) \\\r\n",
+					"    .withColumn(\"sensor_3\", col(\"sensor_3\").cast(DoubleType()))\r\n",
+					"\r\n",
+					"df.show(10)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#Input your key vault name and anomaly key name in key vault.\r\n",
+					"anomalyKey = mssparkutils.credentials.getSecret(\"mlopskeyv1\",\"anomalykey\")\r\n",
+					"#Input your key vault name and connection string name in key vault.\r\n",
+					"connectionString = mssparkutils.credentials.getSecret(\"mlopskeyv1\", \"metricstorageconnstring\")\r\n",
+					"\r\n",
+					"#Specify information about your data.\r\n",
+					"startTime = \"2021-01-01T00:00:00Z\"\r\n",
+					"endTime = \"2021-01-02T09:18:00Z\"\r\n",
+					"timestampColumn = \"timestamp\"\r\n",
+					"inputColumns = [\"sensor_1\", \"sensor_2\", \"sensor_3\"]\r\n",
+					"#Specify the container you created in Storage account, you could also initialize a new name here, and Synapse will help you create that container automatically.\r\n",
+					"containerName = \"metricfolder\"\r\n",
+					"#Set a folder name in Storage account to store the intermediate data.\r\n",
+					"intermediateSaveDir = \"intermediatedata\"\r\n",
+					"\r\n",
+					"simpleMultiAnomalyEstimator = (FitMultivariateAnomaly()\r\n",
+					"    .setSubscriptionKey(anomalyKey)\r\n",
+					"#In .setLocation, specify the region of your Anomaly Detector resource, use lowercase letter like: eastus.\r\n",
+					"    .setLocation(\"eastus\")\r\n",
+					"    .setStartTime(startTime)\r\n",
+					"    .setEndTime(endTime)\r\n",
+					"    .setContainerName(containerName)\r\n",
+					"    .setIntermediateSaveDir(intermediateSaveDir)\r\n",
+					"    .setTimestampCol(timestampColumn)\r\n",
+					"    .setInputCols(inputColumns)\r\n",
+					"    .setSlidingWindow(200)\r\n",
+					"    .setConnectionString(connectionString))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"model = simpleMultiAnomalyEstimator.fit(df)\r\n",
+					"type(model)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"startInferenceTime = \"2021-01-02T09:19:00Z\"\r\n",
+					"endInferenceTime = \"2021-01-03T01:59:00Z\"\r\n",
+					"result = (model\r\n",
+					"      .setStartTime(startInferenceTime)\r\n",
+					"      .setEndTime(endInferenceTime)\r\n",
+					"      .setOutputCol(\"results\")\r\n",
+					"      .setErrorCol(\"errors\")\r\n",
+					"      .setTimestampCol(timestampColumn)\r\n",
+					"      .setInputCols(inputColumns)\r\n",
+					"      .transform(df))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"rdf = (result.select(\"timestamp\",*inputColumns, \"results.contributors\", \"results.isAnomaly\", \"results.severity\").orderBy('timestamp', ascending=True).filter(col('timestamp') >= lit(startInferenceTime)).toPandas())\r\n",
+					"\r\n",
+					"def parse(x):\r\n",
+					"    if type(x) is list:\r\n",
+					"        return dict([item[::-1] for item in x])\r\n",
+					"    else:\r\n",
+					"        return {'series_0': 0, 'series_1': 0, 'series_2': 0}\r\n",
+					"\r\n",
+					"rdf['contributors'] = rdf['contributors'].apply(parse)\r\n",
+					"rdf = pd.concat([rdf.drop(['contributors'], axis=1), pd.json_normalize(rdf['contributors'])], axis=1)\r\n",
+					"rdf"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"simpleMultiAnomalyEstimator.cleanUpIntermediateData()\r\n",
+					"model.cleanUpIntermediateData()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
