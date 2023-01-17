@@ -5107,16 +5107,16 @@
 					"type": "BigDataPoolReference"
 				},
 				"sessionProperties": {
-					"driverMemory": "224g",
-					"driverCores": 32,
-					"executorMemory": "224g",
-					"executorCores": 32,
-					"numExecutors": 2,
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 5,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4aebdc60-2b0b-4799-8398-80baeb1cd9a3"
+						"spark.dynamicAllocation.minExecutors": "5",
+						"spark.dynamicAllocation.maxExecutors": "5",
+						"spark.autotune.trackingId": "6c6406dd-90e1-40cb-a8ea-75b8e4c7a7ee"
 					}
 				},
 				"metadata": {
@@ -5173,6 +5173,34 @@
 							"}"
 						],
 						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%%configure -f\r\n",
+							"{\r\n",
+							"  \"name\": \"synapseml\",\r\n",
+							"  \"conf\": {\r\n",
+							"      \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.10.2\",\r\n",
+							"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
+							"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,com.fasterxml.jackson.core:jackson-databind\",\r\n",
+							"      \"spark.yarn.user.classpath.first\": \"true\"\r\n",
+							"  }\r\n",
+							"}"
+						],
+						"outputs": [],
 						"execution_count": 2
 					},
 					{
@@ -5200,7 +5228,54 @@
 							"import synapse.ml"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df = spark.read.load('abfss://metricfolder@synpasedlstore.dfs.core.windows.net/train_set.csv', format='csv'\r\n",
+							"## If header exists uncomment line below\r\n",
+							", header=True\r\n",
+							")\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"!wget https://sparkdemostorage.blob.core.windows.net/mvadcsvdata/spark-demo-data.csv"
+						],
+						"outputs": [],
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -5224,7 +5299,7 @@
 							"df.show(10)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
