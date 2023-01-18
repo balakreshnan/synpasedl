@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "5",
 				"spark.dynamicAllocation.maxExecutors": "5",
-				"spark.autotune.trackingId": "7e388644-1681-46a8-9a73-afeff316ffa7"
+				"spark.autotune.trackingId": "7e2dc884-ab64-4728-95e6-3dd23ee5cca2"
 			}
 		},
 		"metadata": {
@@ -183,7 +183,7 @@
 					"from pyspark.sql.types import DoubleType\r\n",
 					"import synapse.ml"
 				],
-				"execution_count": 5
+				"execution_count": 35
 			},
 			{
 				"cell_type": "code",
@@ -292,7 +292,7 @@
 					"# Bootstrap Spark Session\r\n",
 					"spark = SparkSession.builder.getOrCreate()"
 				],
-				"execution_count": 8
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
@@ -323,7 +323,7 @@
 					"# The location of the anomaly detector resource that you created\r\n",
 					"location = \"eastus\""
 				],
-				"execution_count": 25
+				"execution_count": 45
 			},
 			{
 				"cell_type": "code",
@@ -343,7 +343,7 @@
 					"    f\"fs.azure.account.key.{storageName}.blob.core.windows.net\", storageKey\r\n",
 					")"
 				],
-				"execution_count": 10
+				"execution_count": 46
 			},
 			{
 				"cell_type": "code",
@@ -371,7 +371,7 @@
 					"import synapse.ml\r\n",
 					"from synapse.ml.cognitive import *"
 				],
-				"execution_count": 11
+				"execution_count": 47
 			},
 			{
 				"cell_type": "code",
@@ -393,7 +393,7 @@
 					"    .load(\"wasbs://publicwasb@mmlspark.blob.core.windows.net/MVAD/sample.csv\")\r\n",
 					")"
 				],
-				"execution_count": 12
+				"execution_count": 37
 			},
 			{
 				"cell_type": "code",
@@ -418,7 +418,26 @@
 					"# Let's inspect the dataframe:\r\n",
 					"df.show(5)"
 				],
-				"execution_count": 13
+				"execution_count": 38
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(df)"
+				],
+				"execution_count": 39
 			},
 			{
 				"cell_type": "code",
@@ -451,7 +470,7 @@
 					"    .setSlidingWindow(200)\r\n",
 					")"
 				],
-				"execution_count": 14
+				"execution_count": 48
 			},
 			{
 				"cell_type": "code",
@@ -469,7 +488,7 @@
 				"source": [
 					"model = estimator.fit(df)"
 				],
-				"execution_count": 15
+				"execution_count": 49
 			},
 			{
 				"cell_type": "code",
@@ -500,7 +519,7 @@
 					"\r\n",
 					"result.show(5)"
 				],
-				"execution_count": 16
+				"execution_count": 50
 			},
 			{
 				"cell_type": "code",
@@ -531,7 +550,7 @@
 					"\r\n",
 					"rdf"
 				],
-				"execution_count": 17
+				"execution_count": 51
 			},
 			{
 				"cell_type": "code",
@@ -560,7 +579,7 @@
 					")\r\n",
 					"rdf"
 				],
-				"execution_count": 18
+				"execution_count": 52
 			},
 			{
 				"cell_type": "code",
@@ -677,7 +696,7 @@
 					"    rdf[\"timestamp\"],\r\n",
 					"    rdf[\"sensor_1\"],\r\n",
 					"    color=\"tab:orange\",\r\n",
-					"    line,\r\n",
+					"    #line,\r\n",
 					"    linewidth=2,\r\n",
 					"    label=\"sensor_1\",\r\n",
 					")\r\n",
@@ -685,7 +704,7 @@
 					"    rdf[\"timestamp\"],\r\n",
 					"    rdf[\"sensor_2\"],\r\n",
 					"    color=\"tab:green\",\r\n",
-					"    line,\r\n",
+					"    #line,\r\n",
 					"    linewidth=2,\r\n",
 					"    label=\"sensor_2\",\r\n",
 					")\r\n",
@@ -693,7 +712,7 @@
 					"    rdf[\"timestamp\"],\r\n",
 					"    rdf[\"sensor_3\"],\r\n",
 					"    color=\"tab:blue\",\r\n",
-					"    line,\r\n",
+					"    #line,\r\n",
 					"    linewidth=2,\r\n",
 					"    label=\"sensor_3\",\r\n",
 					")\r\n",
@@ -718,7 +737,7 @@
 					"    rdf[\"timestamp\"],\r\n",
 					"    rdf[\"severity\"],\r\n",
 					"    color=\"black\",\r\n",
-					"    line,\r\n",
+					"    #line,\r\n",
 					"    linewidth=2,\r\n",
 					"    label=\"Severity score\",\r\n",
 					")\r\n",
@@ -726,7 +745,7 @@
 					"    rdf[\"timestamp\"],\r\n",
 					"    [minSeverity] * len(rdf[\"severity\"]),\r\n",
 					"    color=\"red\",\r\n",
-					"    line,\r\n",
+					"    #line,\r\n",
 					"    linewidth=1,\r\n",
 					"    label=\"minSeverity\",\r\n",
 					")\r\n",
@@ -764,7 +783,7 @@
 					"plt.title(\"The contribution of each sensor to the detected anomaly\")\r\n",
 					"plt.show()"
 				],
-				"execution_count": 36
+				"execution_count": 55
 			},
 			{
 				"cell_type": "code",
