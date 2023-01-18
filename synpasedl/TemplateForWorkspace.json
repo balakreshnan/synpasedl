@@ -5107,7 +5107,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "5",
 						"spark.dynamicAllocation.maxExecutors": "5",
-						"spark.autotune.trackingId": "f20e323d-484e-4a8a-9153-1dfbef7775ac"
+						"spark.autotune.trackingId": "b0680791-fdb4-4805-9055-a7c9c123fa70"
 					}
 				},
 				"metadata": {
@@ -5279,7 +5279,7 @@
 							"import synapse.ml"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -5393,7 +5393,7 @@
 							"spark = SparkSession.builder.getOrCreate()"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 42
 					},
 					{
 						"cell_type": "code",
@@ -5425,7 +5425,7 @@
 							"location = \"eastus\""
 						],
 						"outputs": [],
-						"execution_count": 25
+						"execution_count": 45
 					},
 					{
 						"cell_type": "code",
@@ -5446,7 +5446,7 @@
 							")"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 46
 					},
 					{
 						"cell_type": "code",
@@ -5475,7 +5475,7 @@
 							"from synapse.ml.cognitive import *"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 47
 					},
 					{
 						"cell_type": "code",
@@ -5498,7 +5498,7 @@
 							")"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 37
 					},
 					{
 						"cell_type": "code",
@@ -5524,7 +5524,27 @@
 							"df.show(5)"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 38
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df)"
+						],
+						"outputs": [],
+						"execution_count": 39
 					},
 					{
 						"cell_type": "code",
@@ -5558,7 +5578,7 @@
 							")"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 48
 					},
 					{
 						"cell_type": "code",
@@ -5577,7 +5597,7 @@
 							"model = estimator.fit(df)"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 49
 					},
 					{
 						"cell_type": "code",
@@ -5609,7 +5629,7 @@
 							"result.show(5)"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 50
 					},
 					{
 						"cell_type": "code",
@@ -5641,7 +5661,7 @@
 							"rdf"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 51
 					},
 					{
 						"cell_type": "code",
@@ -5671,7 +5691,7 @@
 							"rdf"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": 52
 					},
 					{
 						"cell_type": "code",
@@ -5790,7 +5810,7 @@
 							"    rdf[\"timestamp\"],\r\n",
 							"    rdf[\"sensor_1\"],\r\n",
 							"    color=\"tab:orange\",\r\n",
-							"    line,\r\n",
+							"    #line,\r\n",
 							"    linewidth=2,\r\n",
 							"    label=\"sensor_1\",\r\n",
 							")\r\n",
@@ -5798,7 +5818,7 @@
 							"    rdf[\"timestamp\"],\r\n",
 							"    rdf[\"sensor_2\"],\r\n",
 							"    color=\"tab:green\",\r\n",
-							"    line,\r\n",
+							"    #line,\r\n",
 							"    linewidth=2,\r\n",
 							"    label=\"sensor_2\",\r\n",
 							")\r\n",
@@ -5806,7 +5826,7 @@
 							"    rdf[\"timestamp\"],\r\n",
 							"    rdf[\"sensor_3\"],\r\n",
 							"    color=\"tab:blue\",\r\n",
-							"    line,\r\n",
+							"    #line,\r\n",
 							"    linewidth=2,\r\n",
 							"    label=\"sensor_3\",\r\n",
 							")\r\n",
@@ -5831,7 +5851,7 @@
 							"    rdf[\"timestamp\"],\r\n",
 							"    rdf[\"severity\"],\r\n",
 							"    color=\"black\",\r\n",
-							"    line,\r\n",
+							"    #line,\r\n",
 							"    linewidth=2,\r\n",
 							"    label=\"Severity score\",\r\n",
 							")\r\n",
@@ -5839,7 +5859,7 @@
 							"    rdf[\"timestamp\"],\r\n",
 							"    [minSeverity] * len(rdf[\"severity\"]),\r\n",
 							"    color=\"red\",\r\n",
-							"    line,\r\n",
+							"    #line,\r\n",
 							"    linewidth=1,\r\n",
 							"    label=\"minSeverity\",\r\n",
 							")\r\n",
@@ -5878,7 +5898,7 @@
 							"plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 55
 					},
 					{
 						"cell_type": "code",
