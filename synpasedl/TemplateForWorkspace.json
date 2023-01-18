@@ -5107,7 +5107,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "5",
 						"spark.dynamicAllocation.maxExecutors": "5",
-						"spark.autotune.trackingId": "43a70451-5647-448f-a1af-69ca5cbde125"
+						"spark.autotune.trackingId": "f20e323d-484e-4a8a-9153-1dfbef7775ac"
 					}
 				},
 				"metadata": {
@@ -5211,7 +5211,48 @@
 							"}"
 						],
 						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import synapse.ml.core\r\n",
+							"\r\n",
+							"synapse.ml.core.__spark_package_version__\r\n",
+							""
+						],
+						"outputs": [],
 						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -5238,7 +5279,7 @@
 							"import synapse.ml"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -5266,7 +5307,7 @@
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -5328,7 +5369,7 @@
 							"df.show(10)"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -5352,7 +5393,7 @@
 							"spark = SparkSession.builder.getOrCreate()"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -5405,7 +5446,7 @@
 							")"
 						],
 						"outputs": [],
-						"execution_count": 26
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -5434,7 +5475,7 @@
 							"from synapse.ml.cognitive import *"
 						],
 						"outputs": [],
-						"execution_count": 27
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -5457,7 +5498,7 @@
 							")"
 						],
 						"outputs": [],
-						"execution_count": 28
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -5483,7 +5524,7 @@
 							"df.show(5)"
 						],
 						"outputs": [],
-						"execution_count": 29
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -5517,7 +5558,7 @@
 							")"
 						],
 						"outputs": [],
-						"execution_count": 30
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -5536,7 +5577,7 @@
 							"model = estimator.fit(df)"
 						],
 						"outputs": [],
-						"execution_count": 31
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -5568,7 +5609,7 @@
 							"result.show(5)"
 						],
 						"outputs": [],
-						"execution_count": 32
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -5600,7 +5641,7 @@
 							"rdf"
 						],
 						"outputs": [],
-						"execution_count": 33
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -5628,6 +5669,100 @@
 							"    [rdf.drop([\"contributors\"], axis=1), pd.json_normalize(rdf[\"contributors\"])], axis=1\r\n",
 							")\r\n",
 							"rdf"
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import synapse.ml.core\r\n",
+							"\r\n",
+							"synapse.ml.core.__spark_package_version__\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from synapse.ml.cognitive import *\r\n",
+							"\r\n",
+							"anomalyKey = mssparkutils.credentials.getSecret(\"mlopskeyv1\",\"anomalykey\")\r\n",
+							"\r\n",
+							"from pyspark.sql.functions import lit\r\n",
+							"df = spark.createDataFrame([\r\n",
+							"    (\"1972-01-01T00:00:00Z\", 826.0),\r\n",
+							"    (\"1972-02-01T00:00:00Z\", 799.0),\r\n",
+							"    (\"1972-03-01T00:00:00Z\", 890.0),\r\n",
+							"    (\"1972-04-01T00:00:00Z\", 900.0),\r\n",
+							"    (\"1972-05-01T00:00:00Z\", 766.0),\r\n",
+							"    (\"1972-06-01T00:00:00Z\", 805.0),\r\n",
+							"    (\"1972-07-01T00:00:00Z\", 821.0),\r\n",
+							"    (\"1972-08-01T00:00:00Z\", 20000.0),\r\n",
+							"    (\"1972-09-01T00:00:00Z\", 883.0),\r\n",
+							"    (\"1972-10-01T00:00:00Z\", 898.0),\r\n",
+							"    (\"1972-11-01T00:00:00Z\", 957.0),\r\n",
+							"    (\"1972-12-01T00:00:00Z\", 924.0),\r\n",
+							"    (\"1973-01-01T00:00:00Z\", 881.0),\r\n",
+							"    (\"1973-02-01T00:00:00Z\", 837.0),\r\n",
+							"    (\"1973-03-01T00:00:00Z\", 9000.0)\r\n",
+							"], [\"timestamp\", \"value\"]).withColumn(\"group\", lit(\"series1\"))\r\n",
+							"\r\n",
+							"#anomalyDetector = (SimpleDetectAnomalies() \r\n",
+							"    #.setLinkedService(\"AnomalyDetector\")\r\n",
+							"#    .setSubscriptionKey(anomalyKey)\r\n",
+							"#    .setOutputCol(\"output\")\r\n",
+							"#    .setErrorCol(\"error\")\r\n",
+							"#    .setGranularity(\"monthly\")\r\n",
+							"#    .setTimestampCol(\"timestamp\")\r\n",
+							"#    .setValueCol(\"value\")\r\n",
+							"#    .setGroupbyCol(\"group\"))\r\n",
+							"\r\n",
+							"sda = (SimpleDetectAnomalies()\r\n",
+							"        .setSubscriptionKey(anomalyKey)\r\n",
+							"        .setLocation(\"eastus\")\r\n",
+							"        .setOutputCol(\"anomalies\")\r\n",
+							"        .setGroupbyCol(\"group\")\r\n",
+							"        .setTimestampCol(\"timestamp\")\r\n",
+							"        .setErrorCol(\"error\")\r\n",
+							"        .setGranularity(\"monthly\"))\r\n",
+							"\r\n",
+							"\r\n",
+							"#sda.transform(df).show()\r\n",
+							"\r\n",
+							"#results = anomalyDetector.transform(df)\r\n",
+							"results = sda.transform(df)\r\n",
+							"\r\n",
+							"# Show the results\r\n",
+							"#display(results.select(\"timestamp\", \"value\", \"group\", \"output.*\", \"error\").limit(10))\r\n",
+							"#display(results)\r\n",
+							"display(results.select(\"timestamp\", \"value\", \"group\", \"anomalies\", \"error\").limit(10))\r\n",
+							""
 						],
 						"outputs": [],
 						"execution_count": 34
