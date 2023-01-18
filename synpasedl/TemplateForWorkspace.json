@@ -5107,7 +5107,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "5",
 						"spark.dynamicAllocation.maxExecutors": "5",
-						"spark.autotune.trackingId": "b0680791-fdb4-4805-9055-a7c9c123fa70"
+						"spark.autotune.trackingId": "03e4a11c-8952-4b6a-9dac-bf30aaeba1c7"
 					}
 				},
 				"metadata": {
@@ -5138,34 +5138,6 @@
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"%%configure -f\r\n",
-							"{\r\n",
-							"  \"name\": \"synapseml\",\r\n",
-							"  \"conf\": {\r\n",
-							"      \"spark.jars.packages\": \" com.microsoft.azure:synapseml_2.12:0.9.5 \",\r\n",
-							"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
-							"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,io.netty:netty-tcnative-boringssl-static\",\r\n",
-							"      \"spark.yarn.user.classpath.first\": \"true\"\r\n",
-							"  }\r\n",
-							"}"
-						],
-						"outputs": [],
-						"execution_count": 1
-					},
 					{
 						"cell_type": "code",
 						"metadata": {
