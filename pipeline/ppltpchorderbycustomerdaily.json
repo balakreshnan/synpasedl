@@ -19,9 +19,9 @@
 						"referenceName": "tpchcustomerdaily",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 80,
-						"computeType": "MemoryOptimized"
+					"integrationRuntime": {
+						"referenceName": "DFRuntimeMem",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine",
 					"continueOnError": true
