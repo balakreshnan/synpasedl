@@ -1466,9 +1466,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 80,
-								"computeType": "MemoryOptimized"
+							"integrationRuntime": {
+								"referenceName": "DFRuntimeMem",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine",
 							"continueOnError": true
@@ -1482,7 +1482,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/tpchcustomerdaily')]"
+				"[concat(variables('workspaceId'), '/dataflows/tpchcustomerdaily')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/DFRuntimeMem')]"
 			]
 		},
 		{
@@ -2453,6 +2454,26 @@
 							"computeType": "General",
 							"coreCount": 8,
 							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DFRuntimeMem')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "MemoryOptimized",
+							"coreCount": 48,
+							"timeToLive": 10,
+							"cleanup": false
 						}
 					}
 				}
@@ -5107,7 +5128,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "5",
 						"spark.dynamicAllocation.maxExecutors": "5",
-						"spark.autotune.trackingId": "03e4a11c-8952-4b6a-9dac-bf30aaeba1c7"
+						"spark.autotune.trackingId": "69c8db92-526d-4499-abde-7a112aae557a"
 					}
 				},
 				"metadata": {
@@ -5132,8 +5153,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224,
-						"automaticScaleJobs": false
+						"memory": 224
 					},
 					"sessionKeepAliveTimeout": 30
 				},
