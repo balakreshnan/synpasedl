@@ -3635,6 +3635,7 @@
 						"aggregate1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
@@ -7323,7 +7324,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0b4450c6-4b9a-4add-a5d4-c7cb4b09bf05"
+						"spark.autotune.trackingId": "b744df1d-c2be-4f24-b3b6-5c87bc6882b9"
 					}
 				},
 				"metadata": {
@@ -7348,8 +7349,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224,
-						"automaticScaleJobs": false
+						"memory": 224
 					},
 					"sessionKeepAliveTimeout": 30
 				},
