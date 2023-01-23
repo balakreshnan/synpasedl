@@ -7324,7 +7324,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b744df1d-c2be-4f24-b3b6-5c87bc6882b9"
+						"spark.autotune.trackingId": "e9684b49-c848-4479-9904-fe89f2db9c9a"
 					}
 				},
 				"metadata": {
@@ -7349,7 +7349,8 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224
+						"memory": 224,
+						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -7364,7 +7365,7 @@
 						},
 						"source": [
 							"%%pyspark\r\n",
-							"df = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpchoutput/dailyordersbycustomers/year=1994/month=2/part-00002-99668778-ef7d-403a-b95b-88dce6cb6e2d.c000.snappy.parquet', format='parquet')\r\n",
+							"df = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpchoutput/dailyordersbycustomers/year=1994/month=2/part-00003-73187689-bb71-4c72-8072-cfbb34c3607e.c000.snappy.parquet', format='parquet')\r\n",
 							"display(df.limit(10))"
 						],
 						"outputs": [],
