@@ -1762,7 +1762,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "tpch1/LINEITEM",
+						"folderPath": "tpch2/LINEITEM",
 						"fileSystem": "root"
 					},
 					"compressionCodec": "snappy"
@@ -6664,7 +6664,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "80e4e673-74ad-4531-a515-87b3d6c6af2d"
+						"spark.autotune.trackingId": "97d1c547-922b-4825-aef6-b1cb4a93883c"
 					}
 				},
 				"metadata": {
@@ -6689,8 +6689,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224,
-						"automaticScaleJobs": false
+						"memory": 224
 					},
 					"sessionKeepAliveTimeout": 30
 				},
