@@ -1,0 +1,112 @@
+{
+	"name": "tpchfewfiles",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spark32",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "224g",
+			"driverCores": 32,
+			"executorMemory": "224g",
+			"executorCores": 32,
+			"numExecutors": 3,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "3",
+				"spark.dynamicAllocation.maxExecutors": "3",
+				"spark.autotune.trackingId": "5c573ba4-b8a1-4e1a-8d65-53e0e1947f9f"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/80ef7369-572a-4abd-b09a-033367f44858/resourceGroups/mlopsdeveast/providers/Microsoft.Synapse/workspaces/synpasedl/bigDataPools/spark32",
+				"name": "spark32",
+				"type": "Spark",
+				"endpoint": "https://synpasedl.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark32",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 32,
+				"memory": 224,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df = spark.read.load([\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/part-00000-66924ccf-4407-468d-925e-287543687446-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/part-00001-66924ccf-4407-468d-925e-287543687446-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/part-00002-66924ccf-4407-468d-925e-287543687446-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/part-00003-66924ccf-4407-468d-925e-287543687446-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/part-00004-66924ccf-4407-468d-925e-287543687446-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/part-00005-66924ccf-4407-468d-925e-287543687446-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/part-00006-66924ccf-4407-468d-925e-287543687446-c000.snappy.parquet'\r\n",
+					"    ], format='parquet')\r\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df.repartition(7).write.mode(\"overwrite\").parquet('abfss://root@synpasedlstore.dfs.core.windows.net/tpch2/LINEITEM')"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
