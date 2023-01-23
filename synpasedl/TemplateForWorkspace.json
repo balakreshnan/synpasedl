@@ -3704,12 +3704,12 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://synpasedlstore.dfs.core.windows.net/root/tpchoutput/**',\n        FORMAT = 'PARQUET'\n    ) \nWITH\n(\n    [day] INT ,\n    [C_CUSTKEY] DECIMAL(9, 0),\n    [Tprice] DECIMAL(10,2),\n    [Tdicount] DECIMAL(10,2),\n    [Tqty] DECIMAL(14, 2),\n    [Ttax] DECIMAL(10,2),\n    [Titem] INT,\n    [Textprice] DECIMAL(19, 2)\n) AS [result]\n",
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://synpasedlstore.dfs.core.windows.net/root/tpchoutput/**',\n        FORMAT = 'PARQUET'\n    ) \nWITH\n(\n    [day] INT ,\n    [C_CUSTKEY] varchar(100),\n    [Tprice] DECIMAL(10,2),\n    [Tdicount] DECIMAL(10,2),\n    [Tqty] DECIMAL(14, 2),\n    [Ttax] DECIMAL(10,2),\n    [Titem] INT,\n    [Textprice] DECIMAL(19, 2)\n) AS [result]\n",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
+						"databaseName": "datagovdb",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -7324,7 +7324,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e9684b49-c848-4479-9904-fe89f2db9c9a"
+						"spark.autotune.trackingId": "38ad985d-8caa-40f4-99a2-271d416d2139"
 					}
 				},
 				"metadata": {
@@ -7349,8 +7349,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224,
-						"automaticScaleJobs": false
+						"memory": 224
 					},
 					"sessionKeepAliveTimeout": 30
 				},
