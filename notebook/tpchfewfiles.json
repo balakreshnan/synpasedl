@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "3",
 				"spark.dynamicAllocation.maxExecutors": "3",
-				"spark.autotune.trackingId": "5c573ba4-b8a1-4e1a-8d65-53e0e1947f9f"
+				"spark.autotune.trackingId": "3ef4956b-e3fe-49a0-8925-fd9e5d2e924f"
 			}
 		},
 		"metadata": {
@@ -88,6 +88,56 @@
 					"df.repartition(7).write.mode(\"overwrite\").parquet('abfss://root@synpasedlstore.dfs.core.windows.net/tpch2/LINEITEM')"
 				],
 				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df = spark.read.load([\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/ORDERS/part-00000-f9e6f6da-70fe-4141-8e95-f2487d485d86-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/ORDERS/part-00001-f9e6f6da-70fe-4141-8e95-f2487d485d86-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/ORDERS/part-00002-f9e6f6da-70fe-4141-8e95-f2487d485d86-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/ORDERS/part-00003-f9e6f6da-70fe-4141-8e95-f2487d485d86-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/ORDERS/part-00004-f9e6f6da-70fe-4141-8e95-f2487d485d86-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/ORDERS/part-00005-f9e6f6da-70fe-4141-8e95-f2487d485d86-c000.snappy.parquet',\r\n",
+					"    'abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/ORDERS/part-00006-f9e6f6da-70fe-4141-8e95-f2487d485d86-c000.snappy.parquet'\r\n",
+					"    ], format='parquet')\r\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df.repartition(7).write.mode(\"overwrite\").parquet('abfss://root@synpasedlstore.dfs.core.windows.net/tpch2/ORDERS')"
+				],
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
