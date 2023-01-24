@@ -127,6 +127,8 @@
 				"aggregate1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'delta',",
+				"     fileSystem: 'root',",
+				"     folderPath: 'tpchoutput/dailyordersbycustomers',",
 				"     overwrite:true,",
 				"     mergeSchema: false,",
 				"     autoCompact: true,",
