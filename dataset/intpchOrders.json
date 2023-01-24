@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "tpch2/ORDERS",
+				"folderPath": "tpch/ORDERS",
 				"fileSystem": "root"
 			},
 			"compressionCodec": "snappy"
