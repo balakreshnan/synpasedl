@@ -145,8 +145,8 @@
 				"          Titem,",
 				"          Textprice",
 				"     ),",
-				"     partitionBy('fixed', 6,",
-				"          6",
+				"     partitionBy('dynamicRange', 5,",
+				"          year",
 				"     )) ~> sink1"
 			]
 		}
