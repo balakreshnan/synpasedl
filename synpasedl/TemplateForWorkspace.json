@@ -3653,8 +3653,7 @@
 						"          Titem,",
 						"          Textprice",
 						"     ),",
-						"     partitionBy('key',",
-						"          0,",
+						"     partitionBy('dynamicRange', 5,",
 						"          year",
 						"     )) ~> sink1"
 					]
