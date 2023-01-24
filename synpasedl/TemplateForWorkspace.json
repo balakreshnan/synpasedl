@@ -2240,7 +2240,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "tpchoutput/dailyordersbycustomers",
+						"folderPath": "tpchoutput2/orderaggregated",
 						"fileSystem": "root"
 					},
 					"compressionCodec": "snappy"
