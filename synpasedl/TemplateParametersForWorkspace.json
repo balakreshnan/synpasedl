@@ -29,6 +29,9 @@
 		"synpasedl-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synpasedl.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
+		"tpchdeltaoutput_accountKey": {
+			"value": ""
+		},
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://www.yahoo.com"
 		},
@@ -61,6 +64,9 @@
 		},
 		"synpasedl-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://synpasedlstore.dfs.core.windows.net"
+		},
+		"tpchdeltaoutput_properties_typeProperties_url": {
+			"value": "https://synpasedlstore.dfs.core.windows.net/"
 		}
 	}
 }

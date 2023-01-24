@@ -40,6 +40,10 @@
 			"metadata": "Secure string for 'connectionString' of 'synpasedl-WorkspaceDefaultSqlServer'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synpasedl.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
+		"tpchdeltaoutput_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'tpchdeltaoutput'"
+		},
 		"RestService1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://www.yahoo.com"
@@ -83,6 +87,10 @@
 		"synpasedl-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://synpasedlstore.dfs.core.windows.net"
+		},
+		"tpchdeltaoutput_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://synpasedlstore.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -2443,6 +2451,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/tpchdeltaoutput')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('tpchdeltaoutput_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('tpchdeltaoutput_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
 			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
 			"apiVersion": "2019-06-01-preview",
@@ -3536,9 +3567,9 @@
 					],
 					"sinks": [
 						{
-							"dataset": {
-								"referenceName": "outdailyCorders",
-								"type": "DatasetReference"
+							"linkedService": {
+								"referenceName": "tpchdeltaoutput",
+								"type": "LinkedServiceReference"
 							},
 							"name": "sink1"
 						}
@@ -3634,8 +3665,18 @@
 						"          Textprice = sum(L_EXTENDEDPRICE)) ~> aggregate1",
 						"aggregate1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     truncate: true,",
+						"     format: 'delta',",
+						"     fileSystem: 'root',",
+						"     folderPath: 'tpchoutput/dailyordersbycustomers',",
+						"     overwrite:true,",
+						"     mergeSchema: false,",
+						"     autoCompact: true,",
+						"     optimizedWrite: true,",
+						"     vacuum: 0,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
@@ -3664,7 +3705,7 @@
 				"[concat(variables('workspaceId'), '/datasets/intpchcust')]",
 				"[concat(variables('workspaceId'), '/datasets/intpchOrders')]",
 				"[concat(variables('workspaceId'), '/datasets/intpchlineitem')]",
-				"[concat(variables('workspaceId'), '/datasets/outdailyCorders')]"
+				"[concat(variables('workspaceId'), '/linkedServices/tpchdeltaoutput')]"
 			]
 		},
 		{
