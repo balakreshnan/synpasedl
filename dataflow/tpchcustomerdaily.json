@@ -145,9 +145,8 @@
 				"          Titem,",
 				"          Textprice",
 				"     ),",
-				"     partitionBy('key',",
-				"          0,",
-				"          year",
+				"     partitionBy('fixed', 6,",
+				"          ERROR_FUNCTION('')",
 				"     )) ~> sink1"
 			]
 		}
