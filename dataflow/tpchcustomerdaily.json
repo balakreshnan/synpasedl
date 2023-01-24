@@ -145,7 +145,7 @@
 				"          Titem,",
 				"          Textprice",
 				"     ),",
-				"     partitionBy('fixed', 6,",
+				"     partitionBy('fixed', 5,",
 				"          true()",
 				"     )) ~> sink1"
 			]
