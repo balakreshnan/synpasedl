@@ -1502,7 +1502,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "DailyOrdersByCustomer",
+						"name": "DailyOrdersByCustomerfull",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
