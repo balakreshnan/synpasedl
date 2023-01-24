@@ -3923,8 +3923,7 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 1,",
-						"     partitionBy('key',",
-						"          0,",
+						"     partitionBy('dynamicRange', 6,",
 						"          year",
 						"     )) ~> sink1"
 					]
