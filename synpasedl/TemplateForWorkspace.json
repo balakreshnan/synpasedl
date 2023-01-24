@@ -3973,7 +3973,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://synpasedlstore.dfs.core.windows.net/root/tpchoutput/**',\n        FORMAT = 'PARQUET'\n    ) \nWITH\n(\n    [day] INT ,\n    [C_CUSTKEY] varchar(100),\n    [Tprice] DECIMAL(10,2),\n    [Tdicount] DECIMAL(10,2),\n    [Tqty] DECIMAL(14, 2),\n    [Ttax] DECIMAL(10,2),\n    [Titem] INT,\n    [Textprice] DECIMAL(19, 2)\n) AS [result]\n",
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://synpasedlstore.dfs.core.windows.net/root/tpchoutput/**',\n        FORMAT = 'PARQUET'\n    ) \nWITH\n(\n    [day] INT ,\n    [C_CUSTKEY] varchar(100),\n    [Tprice] DECIMAL(10,2),\n    [Tdicount] DECIMAL(10,2),\n    [Tqty] DECIMAL(14, 2),\n    [Ttax] DECIMAL(10,2),\n    [Titem] INT,\n    [Textprice] DECIMAL(19, 2)\n) AS [result]\n\n\n-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://synpasedlstore.dfs.core.windows.net/root/tpchoutput2/**',\n        FORMAT = 'PARQUET'\n    ) \nWITH\n(\n    [month] INT,\n    [day] INT ,\n    [O_ORDERDATE] DATE,\n    [C_CUSTKEY] varchar(100),\n    [Tprice] DECIMAL(10,2),\n    [Tdicount] DECIMAL(10,2),\n    [Tqty] DECIMAL(14, 2),\n    [Ttax] DECIMAL(10,2),\n    [Titem] INT,\n    [Textprice] DECIMAL(19, 2)\n) AS [result]",
 					"metadata": {
 						"language": "sql"
 					},
