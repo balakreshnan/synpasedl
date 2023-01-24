@@ -147,8 +147,7 @@
 				"     ),",
 				"     partitionBy('key',",
 				"          0,",
-				"          year,",
-				"          month",
+				"          year",
 				"     )) ~> sink1"
 			]
 		}
