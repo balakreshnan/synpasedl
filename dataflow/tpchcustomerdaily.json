@@ -146,7 +146,7 @@
 				"          Textprice",
 				"     ),",
 				"     partitionBy('fixed', 6,",
-				"          ERROR_FUNCTION('')",
+				"          true()",
 				"     )) ~> sink1"
 			]
 		}
