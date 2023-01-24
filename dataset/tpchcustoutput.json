@@ -1,0 +1,20 @@
+{
+	"name": "tpchcustoutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synpasedl-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "tpchoutput/dailyordersbycustomers",
+				"fileSystem": "root"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
