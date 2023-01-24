@@ -2175,6 +2175,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/tpchcustoutput')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synpasedl-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "tpchoutput/dailyordersbycustomers",
+						"fileSystem": "root"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synpasedl-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/RestService1')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -3567,9 +3592,9 @@
 					],
 					"sinks": [
 						{
-							"linkedService": {
-								"referenceName": "tpchdeltaoutput",
-								"type": "LinkedServiceReference"
+							"dataset": {
+								"referenceName": "tpchcustoutput",
+								"type": "DatasetReference"
 							},
 							"name": "sink1"
 						}
@@ -3665,35 +3690,14 @@
 						"          Textprice = sum(L_EXTENDEDPRICE)) ~> aggregate1",
 						"aggregate1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     format: 'delta',",
-						"     fileSystem: 'root',",
-						"     folderPath: 'tpchoutput/dailyordersbycustomers',",
-						"     overwrite:true,",
-						"     mergeSchema: false,",
-						"     autoCompact: true,",
-						"     optimizedWrite: true,",
-						"     vacuum: 0,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     mapColumn(",
-						"          year,",
-						"          month,",
-						"          day,",
-						"          C_CUSTKEY,",
-						"          Tprice,",
-						"          Tdicount,",
-						"          Tqty,",
-						"          Ttax,",
-						"          Titem,",
-						"          Textprice",
-						"     ),",
+						"     saveOrder: 1,",
 						"     partitionBy('key',",
 						"          0,",
 						"          year",
@@ -3705,7 +3709,7 @@
 				"[concat(variables('workspaceId'), '/datasets/intpchcust')]",
 				"[concat(variables('workspaceId'), '/datasets/intpchOrders')]",
 				"[concat(variables('workspaceId'), '/datasets/intpchlineitem')]",
-				"[concat(variables('workspaceId'), '/linkedServices/tpchdeltaoutput')]"
+				"[concat(variables('workspaceId'), '/datasets/tpchcustoutput')]"
 			]
 		},
 		{
