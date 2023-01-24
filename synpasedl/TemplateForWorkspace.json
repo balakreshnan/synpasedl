@@ -3655,8 +3655,7 @@
 						"     ),",
 						"     partitionBy('key',",
 						"          0,",
-						"          year,",
-						"          month",
+						"          year",
 						"     )) ~> sink1"
 					]
 				}
@@ -7324,7 +7323,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f7f39448-48f6-48b9-b4e4-42fe89e30f63"
+						"spark.autotune.trackingId": "308a2813-6fd7-442b-8041-73ba1517af37"
 					}
 				},
 				"metadata": {
@@ -7349,8 +7348,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224,
-						"automaticScaleJobs": false
+						"memory": 224
 					},
 					"sessionKeepAliveTimeout": 30
 				},
