@@ -28,9 +28,9 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "outdailyCorders",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "tpchdeltaoutput",
+						"type": "LinkedServiceReference"
 					},
 					"name": "sink1"
 				}
@@ -126,8 +126,16 @@
 				"          Textprice = sum(L_EXTENDEDPRICE)) ~> aggregate1",
 				"aggregate1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'parquet',",
-				"     truncate: true,",
+				"     format: 'delta',",
+				"     overwrite:true,",
+				"     mergeSchema: false,",
+				"     autoCompact: true,",
+				"     optimizedWrite: true,",
+				"     vacuum: 0,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
