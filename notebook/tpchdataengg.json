@@ -8,16 +8,16 @@
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "112g",
-			"driverCores": 16,
-			"executorMemory": "112g",
-			"executorCores": 16,
+			"driverMemory": "224g",
+			"driverCores": 32,
+			"executorMemory": "224g",
+			"executorCores": 32,
 			"numExecutors": 5,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "5",
 				"spark.dynamicAllocation.maxExecutors": "5",
-				"spark.autotune.trackingId": "0917d947-d37c-47df-bbfd-4796b0efea89"
+				"spark.autotune.trackingId": "114446bb-15a4-4f55-887f-abc15b5c1280"
 			}
 		},
 		"metadata": {
@@ -90,12 +90,10 @@
 						"transient": {
 							"deleting": false
 						}
-					},
-					"collapsed": false
+					}
 				},
 				"source": [
-					"dforders = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpch/ORDERS/*.parquet', format='parquet')\r\n",
-					"display(dforders.limit(10))"
+					"dfcustomer.createOrReplaceTempView(\"customers\")"
 				],
 				"execution_count": 2
 			},
@@ -114,10 +112,66 @@
 					"collapsed": false
 				},
 				"source": [
-					"dflineitems = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpch/LINEITEM/*.parquet', format='parquet')\r\n",
-					"display(dflineitems.limit(10))"
+					"dforders = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpch/ORDERS/*.parquet', format='parquet')\r\n",
+					"display(dforders.limit(10))"
 				],
 				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dforders.createOrReplaceTempView(\"orders\")"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"dflineitems = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/*.parquet', format='parquet')\r\n",
+					"display(dflineitems.limit(10))"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dflineitems.createOrReplaceTempView(\"lineitems\")"
+				],
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -136,6 +190,60 @@
 					"dforders.join(dflineitems,dforders[\"O_ORDERKEY\"] == dflineitems[\"L_ORDERKEY\"]).show()"
 				],
 				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql(\"select * from customers limit 100\").show()"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.functions import *"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql('Select year(col(\"a.O_ORDERDATE\")).alias(\"year\"), month(col(\"a.O_ORDERDATE\")).alias(\"month\"), dayofmonth(col(\"a.O_ORDERDATE\")).alias(\"day\"), sum(a.O_TOTALPRICE).alias(\"Total_Price\") from orders a join lineitems b on a.O_ORDERKEY = b.L_ORDERKEY join customers c on a.O_CUSTKEY = c.C_CUSTKEY group by year(col(\"a.O_ORDERDATE\")).alias(\"year\"), month(col(\"a.O_ORDERDATE\")).alias(\"month\"), dayofmonth(col(\"a.O_ORDERDATE\")).alias(\"day\")').show()"
+				],
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
