@@ -1570,6 +1570,42 @@
 							},
 							"driverSize": "XLarge"
 						}
+					},
+					{
+						"name": "MLTraining",
+						"type": "SynapseNotebook",
+						"dependsOn": [
+							{
+								"activity": "DailyAggreSparkSQL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "MLTraining",
+								"type": "NotebookReference"
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "spark32",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": "Large",
+							"conf": {
+								"spark.dynamicAllocation.maxExecutors": 3
+							},
+							"driverSize": "Large"
+						}
 					}
 				],
 				"policy": {
@@ -1582,7 +1618,8 @@
 				"[concat(variables('workspaceId'), '/dataflows/tpchcustomerdailyfull')]",
 				"[concat(variables('workspaceId'), '/integrationRuntimes/DFmemruntime1')]",
 				"[concat(variables('workspaceId'), '/notebooks/tpchdataengg')]",
-				"[concat(variables('workspaceId'), '/bigDataPools/spark32')]"
+				"[concat(variables('workspaceId'), '/bigDataPools/spark32')]",
+				"[concat(variables('workspaceId'), '/notebooks/MLTraining')]"
 			]
 		},
 		{
@@ -4617,7 +4654,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "3",
 						"spark.dynamicAllocation.maxExecutors": "3",
-						"spark.autotune.trackingId": "505650c3-627c-4bb7-ab7f-c1a26ad45f0f"
+						"spark.autotune.trackingId": "d4592e10-904b-4597-a1e3-f544d8937a83"
 					}
 				},
 				"metadata": {
@@ -4642,15 +4679,13 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224,
-						"automaticScaleJobs": false
+						"memory": 224
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							""
 						],
