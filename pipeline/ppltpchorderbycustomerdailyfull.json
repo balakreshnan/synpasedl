@@ -27,6 +27,42 @@
 					"runConcurrently": true,
 					"continueOnError": true
 				}
+			},
+			{
+				"name": "DailyAggreSparkSQL",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "DailyOrdersByCustomerfull",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "tpchdataengg",
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "spark32",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "XLarge",
+					"conf": {
+						"spark.dynamicAllocation.maxExecutors": 5
+					},
+					"driverSize": "XLarge"
+				}
 			}
 		],
 		"annotations": []
