@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "5",
 				"spark.dynamicAllocation.maxExecutors": "5",
-				"spark.autotune.trackingId": "a00905ad-3c11-4e53-bcd4-3f6840d77e29"
+				"spark.autotune.trackingId": "123b95c5-b104-4d4a-85a4-4bb0148dc57a"
 			}
 		},
 		"metadata": {
@@ -66,6 +66,24 @@
 						"transient": {
 							"deleting": false
 						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.functions import *"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
 					},
 					"microsoft": {
 						"language": "python"
@@ -77,7 +95,7 @@
 					"dfcustomer = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpch/CUSTOMER/*.parquet', format='parquet')\r\n",
 					"display(dfcustomer.limit(10))"
 				],
-				"execution_count": 1
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -95,7 +113,7 @@
 				"source": [
 					"dfcustomer.createOrReplaceTempView(\"customers\")"
 				],
-				"execution_count": 2
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -115,7 +133,46 @@
 					"dforders = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpch/ORDERS/*.parquet', format='parquet')\r\n",
 					"display(dforders.limit(10))"
 				],
-				"execution_count": 3
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dforders = dforders.withColumn(\"year\", year(col(\"O_ORDERDATE\")))\r\n",
+					"dforders = dforders.withColumn(\"month\", month(col(\"O_ORDERDATE\")))\r\n",
+					"dforders = dforders.withColumn(\"day\", dayofmonth(col(\"O_ORDERDATE\")))"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(dforders)"
+				],
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -133,7 +190,7 @@
 				"source": [
 					"dforders.createOrReplaceTempView(\"orders\")"
 				],
-				"execution_count": 4
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -153,7 +210,7 @@
 					"dflineitems = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpch1/LINEITEM/*.parquet', format='parquet')\r\n",
 					"display(dflineitems.limit(10))"
 				],
-				"execution_count": 5
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -171,7 +228,7 @@
 				"source": [
 					"dflineitems.createOrReplaceTempView(\"lineitems\")"
 				],
-				"execution_count": 6
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -187,7 +244,7 @@
 					}
 				},
 				"source": [
-					"dforders.join(dflineitems,dforders[\"O_ORDERKEY\"] == dflineitems[\"L_ORDERKEY\"]).show()"
+					"#dforders.join(dflineitems,dforders[\"O_ORDERKEY\"] == dflineitems[\"L_ORDERKEY\"]).show()"
 				],
 				"execution_count": 4
 			},
@@ -207,43 +264,7 @@
 				"source": [
 					"spark.sql(\"select * from customers limit 100\").show()"
 				],
-				"execution_count": 8
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"from pyspark.sql.functions import *"
-				],
-				"execution_count": 9
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"spark.sql('Select year(col(\"a.O_ORDERDATE\")).alias(\"year\"), month(col(\"a.O_ORDERDATE\")).alias(\"month\"), dayofmonth(col(\"a.O_ORDERDATE\")).alias(\"day\"), sum(a.O_TOTALPRICE).alias(\"Total_Price\") from orders a join lineitems b on a.O_ORDERKEY = b.L_ORDERKEY join customers c on a.O_CUSTKEY = c.C_CUSTKEY group by year(col(\"a.O_ORDERDATE\")).alias(\"year\"), month(col(\"a.O_ORDERDATE\")).alias(\"month\"), dayofmonth(col(\"a.O_ORDERDATE\")).alias(\"day\")').show()"
-				],
-				"execution_count": 11
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -261,7 +282,86 @@
 				"source": [
 					""
 				],
-				"execution_count": null
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfaggr = spark.sql(\"Select a.year, a.month, a.day, a.O_CUSTKEY, a.O_ORDERDATE, sum(a.O_TOTALPRICE) as O_TOTALPRICE , sum(b.L_DISCOUNT) as L_DISCOUNT, sum(b.L_QUANTITY) as L_QUANTITY, sum(b.L_TAX) as L_TAX, sum(b.L_LINENUMBER) as L_LINENUMBER, sum(b.L_EXTENDEDPRICE) as L_EXTENDEDPRICE from orders a join lineitems b on a.O_ORDERKEY = b.L_ORDERKEY join customers c on a.O_CUSTKEY = c.C_CUSTKEY group by a.year, a.month, a.day, a.O_CUSTKEY, a.O_ORDERDATE\")"
+				],
+				"execution_count": 41
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(dfaggr)"
+				],
+				"execution_count": 42
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfaggr.repartition(6).write.mode(\"overwrite\").parquet('abfss://root@synpasedlstore.dfs.core.windows.net/tpchoutputsparksql/')"
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df = spark.read.load('abfss://root@synpasedlstore.dfs.core.windows.net/tpchoutputsparksql/*.snappy.parquet', format='parquet')\r\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 44
 			}
 		]
 	}
