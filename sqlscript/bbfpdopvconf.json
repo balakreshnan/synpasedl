@@ -2,7 +2,7 @@
 	"name": "bbfpdopvconf",
 	"properties": {
 		"content": {
-			"query": "create database datagovdb;\n\nuse datagovdb;\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;\n\nuse datagovdb;\nCREATE USER [bbfpdopv] FOR LOGIN [bbfpdopv];\nALTER ROLE db_datareader ADD MEMBER [bbfpdopv];\n\nGRANT REFERENCES ON DATABASE SCOPED CREDENTIAL::[scoped_credential] TO [bbfpdopv];",
+			"query": "create database datagovdb;\n\nuse datagovdb;\nCREATE LOGIN [bbfpdopv] FROM EXTERNAL PROVIDER;\n\nuse datagovdb;\nCREATE USER [bbfpdopv] FOR LOGIN [bbfpdopv];\nALTER ROLE db_datareader ADD MEMBER [bbfpdopv];\n\nGRANT REFERENCES ON DATABASE SCOPED CREDENTIAL::[scoped_credential] TO [bbfpdopv];\n\n--In the master database\nCREATE LOGIN [amlsvruser] FROM EXTERNAL PROVIDER;\n\n-- In your database\nCREATE USER amlsvruser FROM LOGIN [amlsvruser];\n\nALTER ROLE db_owner ADD member alias; -- Type USER name from step 2\n\nCREATE LOGIN [amlsvruser] FROM EXTERNAL PROVIDER;\nALTER SERVER ROLE sysadmin ADD MEMBER [amlsvruser];",
 			"metadata": {
 				"language": "sql"
 			},
