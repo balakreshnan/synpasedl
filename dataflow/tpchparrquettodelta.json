@@ -1,0 +1,65 @@
+{
+	"name": "tpchparrquettodelta",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "intpchcust",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Parquet1",
+						"type": "DatasetReference"
+					},
+					"name": "tpchdeltacustomer",
+					"description": "customer saved as delta"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          C_CUSTKEY as decimal(9,0),",
+				"          C_NAME as string,",
+				"          C_ADDRESS as string,",
+				"          C_NATIONKEY as decimal(38,0),",
+				"          C_PHONE as string,",
+				"          C_ACCTBAL as decimal(9,2),",
+				"          C_MKTSEGMENT as string,",
+				"          C_COMMENT as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> source1",
+				"source1 select(mapColumn(",
+				"          C_CUSTKEY,",
+				"          C_NAME,",
+				"          C_ADDRESS,",
+				"          C_NATIONKEY,",
+				"          C_PHONE,",
+				"          C_ACCTBAL,",
+				"          C_MKTSEGMENT,",
+				"          C_COMMENT",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> tpchdeltacustomer"
+			]
+		}
+	}
+}
